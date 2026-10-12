@@ -73,24 +73,34 @@ class-to-class experience in 60 seconds without any hardware.
 - You can have up to **65,535 beacon numbers** (iBeacon minor field), so the building size
   is not a limit at all — 12 or 120 locations both work.
 
-## KJSIT Sion — starter template (adjust on site)
+## KJSIT Sion — what we have so far
 
-Since public interior floor plans of the KJSIT Sion building aren't published online, the repo
-ships a **template** modelled on the institute's real structure:
+The repo now ships **two KJSIT-based maps**:
 
-- KJSIT occupies a **G+8 building** at the Somaiya Ayurvihar complex, Sion (confirmed from the
-  institute site + Wikipedia). Ground + floors 3/5 style layouts vary — adjust on your site walk.
-- `app/src/main/assets/kjsit_template.json` models **Floor 1 + Floor 2** with two staircases and
-  cross-floor routing that already works (it is covered by the multi-floor tests).
-- To use it: in `tools/map-editor.html`, **Import JSON** → pick the template → edit names/positions
-  to match your real floor → export as `demo_map.json` → replace in `app/src/main/assets/` → rebuild.
-- Copy the same staircase nodes pattern to add floors 3–9 (duplicate a floor, rename rooms,
-  keep staircase names identical across floors).
+- `app/src/main/assets/kjsit_ground.json` — **Ground floor, digitised from the photo of your
+  building's emergency escape route board** (real rooms: Library, Seminar Hall, IT Dept, E&TC Dept,
+  Class Room, Canteen, Gymkhana, Admin, Reception, Principal Cabin, Counselling Room, Staircases
+  1/2/4, Exits West/Central/East). 22 nodes, 23 edges,  back-checked by tests. Positions are
+  **approximate** — open it in `tools/map-editor.html` and nudge nodes to match the real layout.
+- `app/src/main/assets/kjsit_template.json` — a small 2-floor demo (staircase linking) you can
+  ignore once the real maps are done.
 
-> This is a starting grid, not a surveyed plan — a 20-minute site walk with the editor open on a
-> laptop/tablet fixes it. Correct building facts used: Sion campus, Ayurvihar complex, G+8 storeys,
-> departments (AI&DS, Computer, IT, Electronics & Telecom), library is a "Knowledge Resource Centre",
-> ground-floor canteen + sports ground exist (from the institute's public pages).
+### The photo trick (keep doing it!)
+
+Every floor of a building is legally required to post an **emergency escape route plan** — exactly
+like the one you photographed. That board IS the interior map: corridors, rooms, staircases, exits.
+
+**To build the other floors (2–9):**
+1. Photograph each floor's board — straight-on, whole board in frame, good light (avoid glare).
+2. Send the photos to AutoCoder; each one gets digitised like the ground floor.
+3. Staircases keep the same name on every floor (\"Staircase 1/2/4\"), so the app links floors
+   automatically and announces \"Take the stairs to floor N\".
+4. On your site walk, verify/adjust a few node positions per floor with the editor, then export
+   a single combined file as `demo_map.json`.
+
+> Confirmed facts used: KJSIT occupies a G+8 building at the Somaiya Ayurvihar complex, Sion
+> (institute site + Wikipedia). The captured board also gave us the security number
+> 022-44444499 (not stored anywhere in the app).
 
 ## Realistic effort estimate for your college
 
