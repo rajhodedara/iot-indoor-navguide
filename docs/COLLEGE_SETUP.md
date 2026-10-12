@@ -4,6 +4,10 @@ This guide is for the scenario you described: **a student goes from one class to
 inside your college building. The app already supports this — it is map-agnostic. You only
 need to design your building once with the map editor.
 
+> **KJSIT Sion specifically:** a starter template is included (`app/src/main/assets/kjsit_template.json`)
+> modelled as a G+8 building with Floor 1 + Floor 2 and working staircase links — cross-floor
+> class-to-class routing works out of the box. See the last section.
+
 ## Step 1 — Draw your building (15–30 min, no coding)
 
 Open `tools/map-editor.html` in any browser (works offline, e.g. double-click the file).
@@ -60,13 +64,33 @@ class-to-class experience in 60 seconds without any hardware.
 
 ## Notes / limitations to know (honesty for your report)
 
-- **One floor per map file** for now. Two floors = two map files / two demo runs (multi-floor
-  is on the roadmap with staircase prompts).
+- **Multi-floor is supported**: floors cross via stairs/elevator nodes with the same name
+  (e.g. "Staircase A" on every floor). The app announces "Take the stairs to floor 3." and the
+  router prefers routes with fewer floor changes.
 - **Corridor accuracy** (~2–4 m). Great for "which corridor / which turn"; not for cm-level.
 - A room's beacon sits **at its door** — the app guides you TO the door, not inside the room.
 - Distances are for **walking paths**: measure corridor route lengths, not straight lines.
 - You can have up to **65,535 beacon numbers** (iBeacon minor field), so the building size
   is not a limit at all — 12 or 120 locations both work.
+
+## KJSIT Sion — starter template (adjust on site)
+
+Since public interior floor plans of the KJSIT Sion building aren't published online, the repo
+ships a **template** modelled on the institute's real structure:
+
+- KJSIT occupies a **G+8 building** at the Somaiya Ayurvihar complex, Sion (confirmed from the
+  institute site + Wikipedia). Ground + floors 3/5 style layouts vary — adjust on your site walk.
+- `app/src/main/assets/kjsit_template.json` models **Floor 1 + Floor 2** with two staircases and
+  cross-floor routing that already works (it is covered by the multi-floor tests).
+- To use it: in `tools/map-editor.html`, **Import JSON** → pick the template → edit names/positions
+  to match your real floor → export as `demo_map.json` → replace in `app/src/main/assets/` → rebuild.
+- Copy the same staircase nodes pattern to add floors 3–9 (duplicate a floor, rename rooms,
+  keep staircase names identical across floors).
+
+> This is a starting grid, not a surveyed plan — a 20-minute site walk with the editor open on a
+> laptop/tablet fixes it. Correct building facts used: Sion campus, Ayurvihar complex, G+8 storeys,
+> departments (AI&DS, Computer, IT, Electronics & Telecom), library is a "Knowledge Resource Centre",
+> ground-floor canteen + sports ground exist (from the institute's public pages).
 
 ## Realistic effort estimate for your college
 

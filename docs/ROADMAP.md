@@ -8,8 +8,7 @@ nobody mistakes them for implemented functionality.
 
 1. **Voice commands** — start navigation by speaking ("navigate to Room 102") via SpeechRecognizer,
    with a wake gesture. (Design carefully: blind users dislike false triggers while walking.)
-2. **Multi-floor support** — floor field in map, staircase/elevator transition prompts.
-3. **Step-length calibration flow** — "walk 10 steps, we'll learn your stride" wizard.
+2. **Step-length calibration flow** — "walk 10 steps, we'll learn your stride" wizard.
 4. **Heading-assisted PDR** — gyro heading for mid-corridor progress estimates (this build uses
    step counting only; heading drift indoors is real and needs care).
 5. **Haptic pattern user study** — validate/refine the left/right/arrival patterns with users.
@@ -32,7 +31,8 @@ nobody mistakes them for implemented functionality.
 ## Known limitations of the current build
 
 - Corridor-scale demo accuracy (~2–4 m); not room-level precision.
-- Single building, single floor per map file.
+- Multi-floor routing works via named staircase/elevator nodes; the stairs themselves must be
+  walked with user's own judgement (step counting pauses mid-staircase).
 - Snapping tuned for walking pace; slow strollers may want higher `confirmationsNeeded`.
 - Phone-as-beacon depends on a phone model with BLE peripheral support (many mid-range ones work).
 - No automated UI tests (unit tests cover the algorithm core).

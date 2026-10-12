@@ -28,15 +28,19 @@ The app reads a single JSON map from `app/src/main/assets/demo_map.json`. Design
 | `x`, `y` | Node position in **meters** (origin top-left, y grows downward). |
 | `type` | One of `entrance`, `corridor`, `intersection`, `room`, `stairs`, `elevator`, `exit`. Destinations shown to users = room / entrance / stairs / exit. |
 | `beaconMinor` | The iBeacon **minor ID** of the beacon at this node (number or omit). This is how a detected signal maps to a place. Must be unique. |
+| `floor` | Floor number (1 = ground, 2, 3…). Optional, defaults to 1. Multi-floor maps route across floors via stairs/elevator nodes that share the same name. |
 | `edges[].m` | Walkable distance in meters. Edges are bidirectional. |
 
 ### Rules (enforced by the app + editor validator)
 
 1. Every node id unique; every edge references existing nodes.
 2. `beaconMinor` values unique across the map (also unique per iBeacon major — we use major=1 always).
-3. Graph must be **fully connected** (every location reachable).
+3. Graph must be **fully connected** (every location reachable; stairs/elevator links across floors count).
 4. Distances should reflect the real walking path (beacon-to-beacon), not straight-line shortcuts
    through walls.
+5. **Multi-floor**: give stair/elevator nodes the same name on each floor (e.g. "Staircase A" on
+   floors 1–9); the app links them automatically for routing and announces
+   "Take the stairs to floor N" when the route changes floors.
 
 ## Using the editor (tools/map-editor.html)
 

@@ -48,6 +48,20 @@
   <button id="mDelete">Delete (click node/edge)</button>
 
   <h2>Floor</h2>
+  <label>Editing floor</label>
+  <div class="row">
+    <select id="floorSelect">
+      <option value="1">Floor 1</option>
+      <option value="2">Floor 2</option>
+      <option value="3">Floor 3</option>
+      <option value="4">Floor 4</option>
+      <option value="5">Floor 5</option>
+      <option value="6">Floor 6</option>
+      <option value="7">Floor 7</option>
+      <option value="8">Floor 8</option>
+    </select>
+  </div>
+  <div class="hint">Nodes/edges are drawn per floor. Stairs/elevator nodes on different floors are linked automatically in routing (give them the same name, e.g. "Staircase A", one per floor).</div>
   <label>Background image (optional)</label>
   <input type="file" id="imgFile" accept="image/*" />
   <button id="clearImg">Clear image</button>
@@ -89,14 +103,18 @@ const logBox = document.getElementById('log');
 
 const state = {
   mode: 'select',
-  nodes: [],            // {id, x, y, name, type, beaconMinor|null}
+  nodes: [],            // {id, x, y, name, type, beaconMinor|null, floor}
   edges: [],            // {from, to, m}
   selected: null,       // node id
   connectFirst: null,   // node id
   img: null,
   drag: null,           // {id, dx, dy}
   nextId: 1,
+  floor: 1,
 };
+
+function currentFloor() { return Number(document.getElementById('floorSelect').value || 1); }
+function nodesOnFloor() { return state.nodes.filter(n => (n.floor || 1) === currentFloor()); }
 
 function log(msg) { logBox.textContent = msg + '\n' + logBox.textContent.slice(0, 4000); }
 
@@ -116,11 +134,13 @@ function draw() {
   for (let x = 0; x < cv.width; x += step) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, cv.height); ctx.stroke(); }
   for (let y = 0; y < cv.height; y += step) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(cv.width, y); ctx.stroke(); }
 
-  // edges
+  // edges (only those on the current floor)
   ctx.lineWidth = 3;
   state.edges.forEach(e => {
     const a = findNode(e.from), b = findNode(e.to);
     if (!a || !b) return;
+    const floor = a.floor || 1;
+    if (floor !== currentFloor() || (b.floor || 1) !== floor) return;
     ctx.strokeStyle = '#7aa2ff';
     ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
     const mx = (a.x + b.x) / 2, my = (a.y + b.y) / 2;
@@ -129,8 +149,8 @@ function draw() {
     ctx.fillText(e.m.toFixed(1) + 'm', mx + 4, my - 4);
   });
 
-  // nodes
-  state.nodes.forEach(n => {
+  // nodes (only current floor)
+  nodesOnFloor().forEach(n => {
     const isSel = state.selected === n.id;
     const isConnect = state.connectFirst === n.id;
     ctx.beginPath();
@@ -154,12 +174,13 @@ function canvasPos(evt) {
   return { x: Math.round(evt.clientX - r.left), y: Math.round(evt.clientY - r.top) };
 }
 function hitNode(pos) {
-  return state.nodes.find(n => Math.hypot(n.x - pos.x, n.y - pos.y) <= nodeRadius() + 3) || null;
+  return nodesOnFloor().find(n => Math.hypot(n.x - pos.x, n.y - pos.y) <= nodeRadius() + 3) || null;
 }
 function hitEdge(pos) {
   for (const e of state.edges) {
     const a = findNode(e.from), b = findNode(e.to);
     if (!a || !b) continue;
+    if ((a.floor || 1) !== currentFloor() || (b.floor || 1) !== (a.floor || 1)) continue;
     const d = distToSegment(pos, a, b);
     if (d < 6) return e;
   }
@@ -179,7 +200,7 @@ cv.addEventListener('mousedown', evt => {
 
   if (state.mode === 'add') {
     const id = 'n' + (state.nextId++);
-    state.nodes.push({ id, x: pos.x, y: pos.y, name: id, type: 'intersection', beaconMinor: null });
+    state.nodes.push({ id, x: pos.x, y: pos.y, name: id, type: 'intersection', beaconMinor: null, floor: currentFloor() });
     state.selected = id; renderPanels(); draw();
     return;
   }
@@ -246,7 +267,7 @@ function renderPanels() {
   state.nodes.forEach(n => {
     const d = document.createElement('div');
     d.className = 'item' + (state.selected === n.id ? ' sel' : '');
-    d.innerHTML = `<span>${escapeHtml(n.name)} <span style="color:var(--dim)">(${n.id}${n.beaconMinor != null ? ', minor ' + n.beaconMinor : ''})</span></span>`;
+    d.innerHTML = `<span>${escapeHtml(n.name)} <span style="color:var(--dim)">(F${n.floor || 1}, ${n.id}${n.beaconMinor != null ? ', minor ' + n.beaconMinor : ''})</span></span>`;
     const b = document.createElement('button');
     b.textContent = 'edit';
     b.onclick = () => { state.selected = n.id; renderPanels(); draw(); };
@@ -296,6 +317,11 @@ function renderPanels() {
   typeS.onchange = () => { n.type = typeS.value; };
   mk('Type', typeS);
 
+  const floorI = document.createElement('input'); floorI.type = 'number';
+  floorI.min = '0'; floorI.value = n.floor || 1;
+  floorI.onchange = () => { n.floor = Number(floorI.value) || 1; draw(); renderPanels(); };
+  mk('Floor', floorI);
+
   const minorI = document.createElement('input'); minorI.type = 'number';
   minorI.placeholder = 'blank = not a beacon'; minorI.min = '0';
   if (n.beaconMinor != null) minorI.value = n.beaconMinor;
@@ -334,6 +360,7 @@ document.getElementById('imgFile').addEventListener('change', evt => {
   img.src = URL.createObjectURL(f);
 });
 document.getElementById('clearImg').onclick = () => { state.img = null; draw(); };
+document.getElementById('floorSelect').addEventListener('change', () => { state.selected = null; state.connectFirst = null; draw(); renderPanels(); });
 
 // ---------- validate ----------
 function validate() {
@@ -377,7 +404,7 @@ function toJson() {
     uuid: document.getElementById('mapUuid').value.trim(),
     floor: { widthM: Number((cv.width / pxPerM()).toFixed(1)), heightM: Number((cv.height / pxPerM()).toFixed(1)), pxPerM: pxPerM(), image: null },
     nodes: state.nodes.map(n => {
-      const o = { id: n.id, x: Number((n.x / pxPerM()).toFixed(2)), y: Number((n.y / pxPerM()).toFixed(2)), name: n.name, type: n.type };
+      const o = { id: n.id, x: Number((n.x / pxPerM()).toFixed(2)), y: Number((n.y / pxPerM()).toFixed(2)), name: n.name, type: n.type, floor: n.floor || 1 };
       if (n.beaconMinor != null) o.beaconMinor = n.beaconMinor;
       return o;
     }),
@@ -405,7 +432,7 @@ document.getElementById('importFile').addEventListener('change', evt => {
       document.getElementById('mapUuid').value = j.uuid || '';
       if (j.floor && j.floor.pxPerM) document.getElementById('pxPerM').value = j.floor.pxPerM;
       const ppm = pxPerM();
-      state.nodes = (j.nodes || []).map(n => ({ id: n.id, x: n.x * ppm, y: n.y * ppm, name: n.name || n.id, type: n.type || 'room', beaconMinor: n.beaconMinor != null ? n.beaconMinor : null }));
+      state.nodes = (j.nodes || []).map(n => ({ id: n.id, x: n.x * ppm, y: n.y * ppm, name: n.name || n.id, type: n.type || 'room', beaconMinor: n.beaconMinor != null ? n.beaconMinor : null, floor: n.floor || 1 }));
       state.edges = (j.edges || []).map(e => ({ from: e.from, to: e.to, m: e.m }));
       state.selected = null; state.connectFirst = null;
       let maxN = 0; state.nodes.forEach(n => { const m = /^n(\d+)$/.exec(n.id); if (m) maxN = Math.max(maxN, Number(m[1])); });

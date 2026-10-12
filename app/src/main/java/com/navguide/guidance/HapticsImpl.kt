@@ -39,6 +39,10 @@ class HapticsImpl(context: Context) : Haptics {
 
             HapticPattern.SOS_ALARM ->
                 VibrationEffect.createWaveform(longArrayOf(0, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60), -1)
+
+            HapticPattern.TRANSITION ->
+                // Three short pulses: "steps up/down"
+                VibrationEffect.createWaveform(longArrayOf(0, 120, 120, 120, 120, 360), -1)
         }
         vibrator.vibrate(effect)
     }

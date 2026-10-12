@@ -9,7 +9,8 @@ data class MapNode(
     val y: Double,
     val name: String,
     val type: String,
-    val beaconMinor: Int?
+    val beaconMinor: Int?,
+    val floor: Int = 1
 )
 
 data class MapEdge(
@@ -36,7 +37,18 @@ data class MapDoc(
         nodes.mapNotNull { n -> n.beaconMinor?.let { it to n } }.toMap()
     }
     val destinationNodes: List<MapNode>
-        get() = nodes.filter { it.type == "room" || it.type == "entrance" || it.type == "stairs" || it.type == "exit" }
+        get() = nodes.filter {
+            it.type == "room" || it.type == "entrance" || it.type == "stairs" ||
+                it.type == "exit" || it.type == "elevator"
+        }
+
+    /** True when the map spans more than one floor (floors are labelled in UI lists). */
+    val hasMultipleFloors: Boolean
+        get() = nodes.map { it.floor }.distinct().size > 1
+
+    /** Display label for UI lists: "F2 · Class 201" on multi-floor maps, plain name otherwise. */
+    fun displayName(node: MapNode): String =
+        if (hasMultipleFloors) "F${node.floor} · ${node.name}" else node.name
 
     /** Meters between two directly connected nodes, or null. */
     fun edgeMeters(a: String, b: String): Double? {
@@ -63,13 +75,23 @@ data class MapDoc(
             if (!ids.contains(e.to)) problems.add("Edge references missing node: ${e.to}")
             if (e.meters <= 0) problems.add("Edge ${e.from}-${e.to} has non-positive length")
         }
-        // Connectivity (BFS over undirected edges)
+        // Connectivity (BFS over undirected edges, including implicit stairs/elevator links)
         if (ids.isNotEmpty()) {
             val adj = mutableMapOf<String, MutableList<String>>()
             edges.forEach { e ->
                 if (ids.contains(e.from) && ids.contains(e.to)) {
                     adj.getOrPut(e.from) { mutableListOf() }.add(e.to)
                     adj.getOrPut(e.to) { mutableListOf() }.add(e.from)
+                }
+            }
+            // Implicit links: same-name, same-type stairs/elevator nodes on different floors.
+            val transitions = nodes.filter { it.type == "stairs" || it.type == "elevator" }
+            for (a in transitions) {
+                for (b in transitions) {
+                    if (a === b || a.floor == b.floor || a.type != b.type) continue
+                    if (!a.name.equals(b.name, ignoreCase = true)) continue
+                    adj.getOrPut(a.id) { mutableListOf() }.add(b.id)
+                    adj.getOrPut(b.id) { mutableListOf() }.add(a.id)
                 }
             }
             val seen = mutableSetOf<String>()
@@ -106,6 +128,7 @@ data class MapDoc(
                     put("y", n.y)
                     put("name", n.name)
                     put("type", n.type)
+                    put("floor", n.floor)
                     if (n.beaconMinor != null) put("beaconMinor", n.beaconMinor)
                 })
             }
@@ -138,7 +161,8 @@ data class MapDoc(
                     y = n.getDouble("y"),
                     name = n.optString("name", n.getString("id")),
                     type = n.optString("type", "room"),
-                    beaconMinor = if (n.has("beaconMinor") && !n.isNull("beaconMinor")) n.getInt("beaconMinor") else null
+                    beaconMinor = if (n.has("beaconMinor") && !n.isNull("beaconMinor")) n.getInt("beaconMinor") else null,
+                    floor = n.optInt("floor", 1)
                 )
             }
             val edges = (0 until edgesArr.length()).map { i ->

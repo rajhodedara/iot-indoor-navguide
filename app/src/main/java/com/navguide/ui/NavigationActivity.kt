@@ -82,7 +82,7 @@ class NavigationActivity : AppCompatActivity(), SensorEventListener {
         spinner.adapter = ArrayAdapter(
             this,
             android.R.layout.simple_spinner_dropdown_item,
-            simNodes.map { it.name }
+            simNodes.map { doc.displayName(it) }
         )
         findViewById<Button>(R.id.btnSimHop).setOnClickListener {
             val idx = spinner.selectedItemPosition

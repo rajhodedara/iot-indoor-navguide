@@ -7,7 +7,7 @@ interface Speaker {
     fun stop()
 }
 
-enum class HapticPattern { STRAIGHT, LEFT, RIGHT, ARRIVAL, OFF_ROUTE, SOS_ALARM }
+enum class HapticPattern { STRAIGHT, LEFT, RIGHT, ARRIVAL, OFF_ROUTE, SOS_ALARM, TRANSITION }
 
 interface Haptics {
     fun play(pattern: HapticPattern)

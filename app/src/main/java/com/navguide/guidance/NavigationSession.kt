@@ -129,14 +129,26 @@ class NavigationSession(
             beginRouteFrom(nodeId)
             return
         }
+        val previousIndex = currentIndex
         currentIndex = foundIndex
         stepsSinceNode = 0
         countdownDoneForSegment = -1
         softPromptDoneForSegment = -1
 
+        // Floor transition handled here (stairs/elevator node that changes floor).
+        if (foundIndex > previousIndex) {
+            val node = doc.nodeById[nodeId]
+            val next = if (foundIndex + 1 <= route.size - 1) doc.nodeById[route[foundIndex + 1]] else null
+            if (node != null && next != null && node.floor != next.floor) {
+                say(InstructionGenerator.transition(node.type, next.floor))
+                haptics.play(HapticPattern.TRANSITION)
+                return
+            }
+        }
+
         // Command for the turn that happens here (relative to previous segment).
         val turn = turnAtCurrent()
-        if (turn != Turn.STRAIGHT && turn != null) {
+        if (turn != null && turn != Turn.STRAIGHT) {
             val cmd = InstructionGenerator.turnCommand(turn)
             if (cmd != null) {
                 say(cmd)
@@ -176,10 +188,17 @@ class NavigationSession(
         )
     }
 
-    /** First turn ahead of the current position: (segmentIndex, turn). */
+    /** First turn or floor transition ahead of the current position: (segmentIndex, kind). */
     private fun nextTurnAhead(): Pair<Int, Turn>? {
         if (route.size < 2) return null
         for (i in currentIndex until route.size - 1) {
+            val from = doc.nodeById[route[i]]
+            val to = doc.nodeById[route[i + 1]]
+            // Floor transition on this segment?
+            if (from != null && to != null && from.floor != to.floor) {
+                val kind = if (from.type == "elevator" || to.type == "elevator") Turn.ELEVATOR else Turn.STAIRS
+                return i to kind
+            }
             // Turn AT node i+1 relative to segment i -> i+1.
             if (i + 2 <= route.size - 1) {
                 val turn = InstructionGenerator.turnAt(doc, route[i], route[i + 1], route[i + 2])
@@ -256,6 +275,7 @@ class NavigationSession(
         Turn.LEFT -> HapticPattern.LEFT
         Turn.RIGHT -> HapticPattern.RIGHT
         Turn.UTURN -> HapticPattern.OFF_ROUTE
+        Turn.STAIRS, Turn.ELEVATOR -> HapticPattern.TRANSITION
         Turn.STRAIGHT -> HapticPattern.STRAIGHT
     }
 

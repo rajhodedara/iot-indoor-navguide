@@ -70,9 +70,10 @@ class MainActivity : AppCompatActivity() {
         val container = findViewById<LinearLayout>(R.id.llDestinations)
         doc.destinationNodes.sortedBy { it.name }.forEach { node ->
             val b = Button(this)
-            b.text = node.name
+            val label = doc.displayName(node)
+            b.text = label
             b.textSize = 22f
-            b.contentDescription = "Navigate to ${node.name}"
+            b.contentDescription = "Navigate to $label"
             val lp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, dp(72))
             lp.bottomMargin = dp(12)
             b.layoutParams = lp

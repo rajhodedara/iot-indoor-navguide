@@ -37,7 +37,7 @@ class BeaconModeActivity : AppCompatActivity() {
 
         doc.nodes.filter { it.beaconMinor != null }.sortedBy { it.beaconMinor }.forEach { node ->
             val b = Button(this)
-            b.text = "${node.name} (minor ${node.beaconMinor})"
+            b.text = "${doc.displayName(node)} (minor ${node.beaconMinor})"
             b.textSize = 18f
             val lp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, dp(60))
             lp.bottomMargin = dp(8)

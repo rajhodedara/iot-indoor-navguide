@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "name": "KJSIT Sion - TEMPLATE (adjust on site)",
+  "uuid": "E2C56DB5-DFFB-48D2-B060-D0F5A71096E0",
+  "floor": { "widthM": 60, "heightM": 40, "pxPerM": 20, "image": null },
+  "_note": "Starter layout for K J Somaiya Institute of Technology (Sion campus, Ayurvihar complex). KJSIT occupies a G+8 building; this template models Floor 1 and Floor 2 with two working staircase links, so class-to-class navigation ACROSS FLOORS works out of the box - then adjust positions/names to match your real floor plan and add floors 3-9 with tools/map-editor.html. Beacon minors are placeholders (1..12); relabel when real beacons are installed.",
+  "nodes": [
+    { "id": "entrance",   "x": 4,  "y": 20, "name": "Main Entrance",       "type": "entrance",     "beaconMinor": 1,  "floor": 1 },
+    { "id": "lobby",      "x": 12, "y": 20, "name": "Lobby",               "type": "intersection", "beaconMinor": 2,  "floor": 1 },
+    { "id": "j1",         "x": 24, "y": 20, "name": "Junction A",          "type": "intersection", "beaconMinor": 3,  "floor": 1 },
+    { "id": "class101",   "x": 24, "y": 10, "name": "Class 101",           "type": "room",                           "floor": 1 },
+    { "id": "exam",       "x": 24, "y": 30, "name": "Examination Cell",    "type": "room",                           "floor": 1 },
+    { "id": "stairA1",    "x": 40, "y": 20, "name": "Staircase A",         "type": "stairs",       "beaconMinor": 4,  "floor": 1 },
+    { "id": "j2",         "x": 50, "y": 20, "name": "Junction B",          "type": "intersection", "beaconMinor": 5,  "floor": 1 },
+    { "id": "canteen",    "x": 50, "y": 30, "name": "Canteen",             "type": "room",                           "floor": 1 },
+
+    { "id": "stairA2",    "x": 40, "y": 20, "name": "Staircase A",         "type": "stairs",       "beaconMinor": 6,  "floor": 2 },
+    { "id": "j3",         "x": 28, "y": 20, "name": "Junction C",          "type": "intersection", "beaconMinor": 7,  "floor": 2 },
+    { "id": "class201",   "x": 28, "y": 10, "name": "Class 201",           "type": "room",                           "floor": 2 },
+    { "id": "class202",   "x": 28, "y": 30, "name": "Class 202",           "type": "room",                           "floor": 2 },
+    { "id": "library",    "x": 12, "y": 20, "name": "Library",             "type": "room",                           "floor": 2 },
+    { "id": "stairB1",    "x": 4,  "y": 20, "name": "Staircase B",         "type": "stairs",                         "floor": 1 },
+    { "id": "stairB2",    "x": 4,  "y": 20, "name": "Staircase B",         "type": "stairs",                         "floor": 2 }
+  ],
+  "edges": [
+    { "from": "entrance", "to": "lobby",    "m": 8 },
+    { "from": "lobby",    "to": "j1",       "m": 12 },
+    { "from": "j1",       "to": "class101", "m": 10 },
+    { "from": "j1",       "to": "exam",     "m": 10 },
+    { "from": "j1",       "to": "stairA1",  "m": 16 },
+    { "from": "stairA1",  "to": "j2",       "m": 10 },
+    { "from": "j2",       "to": "canteen",  "m": 10 },
+
+    { "from": "entrance", "to": "stairB1",  "m": 8 },
+    { "from": "stairA2",  "to": "j3",       "m": 12 },
+    { "from": "j3",       "to": "class201", "m": 10 },
+    { "from": "j3",       "to": "class202", "m": 10 },
+    { "from": "stairA2",  "to": "library",  "m": 28 },
+    { "from": "stairB2",  "to": "library",  "m": 8 }
+  ]
+}
