@@ -79,6 +79,7 @@ tags from ~₹250–500 each in India (~₹3,000–6,000 for a 12-beacon buildin
 ## Docs
 
 - [docs/SETUP.md](docs/SETUP.md) — build, install, troubleshoot
+- [docs/COLLEGE_SETUP.md](docs/COLLEGE_SETUP.md) — **map your real college, class-to-class**
 - [docs/DEMO_SCRIPT.md](docs/DEMO_SCRIPT.md) — how to demo it (and what to say)
 - [docs/MAP_FORMAT.md](docs/MAP_FORMAT.md) — map JSON schema + editor usage
 - [docs/ACCESSIBILITY.md](docs/ACCESSIBILITY.md) — audio/haptic design + testing checklist
