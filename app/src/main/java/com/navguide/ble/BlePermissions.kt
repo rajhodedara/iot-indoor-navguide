@@ -8,7 +8,11 @@ import androidx.core.content.ContextCompat
 
 object BlePermissions {
 
-    /** Permissions to request at runtime, adjusted for the running OS version. */
+    /**
+     * Core permissions asked at startup. Deliberately does NOT include SEND_SMS:
+     * SMS is optional (used only so SOS can send silently) and requesting it up front
+     * triggers scary OS warnings ("can put your personal and financial info at risk").
+     */
     fun required(): Array<String> {
         val list = mutableListOf<String>()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
@@ -20,7 +24,6 @@ object BlePermissions {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             list.add(Manifest.permission.POST_NOTIFICATIONS)
         }
-        list.add(Manifest.permission.SEND_SMS)
         return list.toTypedArray()
     }
 
@@ -28,4 +31,7 @@ object BlePermissions {
         required().all {
             ContextCompat.checkSelfPermission(context, it) == PackageManager.PERMISSION_GRANTED
         }
+
+    fun hasSms(context: Context): Boolean =
+        ContextCompat.checkSelfPermission(context, Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED
 }

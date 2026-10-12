@@ -1,10 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  NavGuide color tokens — high-contrast dark system.
+  Contrast (WCAG): text_primary on bg ≈ 17:1, amber on bg ≈ 11:1, secondary on surface ≈ 7:1.
+  One accent (amber), one danger (red), one success (green). No decorative colors.
+-->
 <resources>
+    <!-- Base surfaces -->
+    <color name="bg">#0A0C10</color>
+    <color name="surface">#12151C</color>
+    <color name="surface_variant">#1A1F29</color>
+    <color name="outline">#2A3141</color>
+
+    <!-- Text -->
+    <color name="text_primary">#F5F7FA</color>
+    <color name="text_secondary">#A8B3C4</color>
+    <color name="text_on_accent">#171105</color>
+
+    <!-- Accent (amber) -->
+    <color name="amber">#FFC24B</color>
+    <color name="amber_container">#3A2E12</color>
+    <color name="amber_on_container">#FFE3A6</color>
+
+    <!-- Semantic -->
+    <color name="danger_fill">#C4342B</color>
+    <color name="danger_text">#FF9B92</color>
+    <color name="danger_container">#2C1415</color>
+    <color name="success">#8BDD9D</color>
+
+    <!-- Legacy names (kept for compatibility with remaining screens/theme refs) -->
     <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
-    <color name="yellow">#FFFFD54F</color>
-    <color name="dark_gray">#FF1C1C1C</color>
-    <color name="text_secondary">#FFBDBDBD</color>
-    <color name="danger_red">#FFD32F2F</color>
+    <color name="white">#FFF5F7FA</color>
+    <color name="yellow">#FFFFC24B</color>
+    <color name="dark_gray">#FF1A1F29</color>
+    <color name="danger_red">#FFC4342B</color>
     <color name="ic_launcher_background">#FF0D1B2A</color>
 </resources>

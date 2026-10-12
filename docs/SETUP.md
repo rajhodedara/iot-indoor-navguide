@@ -45,7 +45,9 @@ Or copy the APK to the phone and open it (allow "install from unknown sources").
 
 ## 4. First run
 
-1. Grant the permissions the app asks for (Bluetooth + location + notifications + SMS).
+1. Grant the permissions the app asks for (Bluetooth + location + notifications).
+   SMS is **optional**: Settings → "Enable silent SOS" — without it, SOS opens the Messages app
+   with the emergency text ready to send.
 2. **Settings** → set your emergency contact and check "Test voice" / "Test vibration".
 3. Back on the main screen, pick a destination. Inside navigation, the bottom **demo controls**
    (screenshot-free simulator) let you test without any beacons: pick a location → "Hop here".

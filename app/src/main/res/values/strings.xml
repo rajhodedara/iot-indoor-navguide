@@ -1,6 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">NavGuide</string>
+    <string name="main_subtitle">Indoor navigation</string>
+    <string name="section_rooms">Rooms &amp; spaces</string>
+    <string name="section_access">Entrances &amp; exits</string>
+
+    <string name="type_room">Room</string>
+    <string name="type_entrance">Entrance</string>
+    <string name="type_exit">Exit</string>
+    <string name="type_stairs">Staircase</string>
+    <string name="type_elevator">Elevator</string>
+
+    <string name="nav_to_placeholder">To · —</string>
+    <string name="nav_near_unknown">Near: unknown</string>
+    <string name="nav_demo_label">Demo mode</string>
+    <string name="bt_checking">Bluetooth: checking…</string>
+
+    <string name="settings_section_emergency">Emergency</string>
+    <string name="settings_section_movement">Movement</string>
+    <string name="settings_section_voice">Voice &amp; feedback</string>
 
     <string name="main_where_to">Where do you want to go?</string>
     <string name="btn_settings">Settings</string>
@@ -8,6 +26,7 @@
     <string name="btn_simulator">Simulator (Demo)</string>
     <string name="btn_sos">SOS</string>
     <string name="sos_desc">Emergency SOS. Long press to trigger.</string>
+    <string name="sos_hint">Long press for emergency</string>
 
     <string name="nav_title">Navigating</string>
     <string name="nav_waiting_hint">Waiting for beacon signal. No beacons nearby? Tap Auto-walk route below, or pick a location and tap Hop here.</string>
@@ -48,13 +67,20 @@
     <string name="sim_status_hint">No active navigation session</string>
 
     <string name="perm_title">Permissions needed</string>
-    <string name="perm_rationale">NavGuide needs Bluetooth permissions to find and broadcast beacons, and SMS permission for emergency alerts. Location permission is required by Android for Bluetooth scanning.</string>
+    <string name="perm_rationale">NavGuide needs Bluetooth permissions to find and broadcast beacons. Location permission is required by Android for Bluetooth scanning. These permissions are used only for navigation — nothing is uploaded anywhere.</string>
     <string name="btn_grant">Grant permissions</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
 
     <string name="sos_no_contact">Set an emergency contact in Settings first.</string>
     <string name="sos_triggered">SOS activated. Alerting your emergency contact.</string>
+    <string name="sos_opening_sms">Opening Messages with your emergency text. Press send.</string>
+    <string name="sos_could_not_open_sms">Could not open the Messages app. Alarm is still sounding.</string>
+
+    <string name="settings_sms_button">Enable silent SOS (optional)</string>
+    <string name="settings_sms_button_hint">Without this, SOS opens the Messages app with the emergency text ready — you just press send.</string>
+    <string name="settings_sms_on">Silent SOS enabled — emergency texts send automatically.</string>
+    <string name="settings_sms_denied">Not enabled. SOS will open the Messages app instead.</string>
 
     <string name="cd_back">Back</string>
 </resources>

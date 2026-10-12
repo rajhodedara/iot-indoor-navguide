@@ -1,51 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black"
+    android:background="@color/bg"
     android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="20dp">
+        android:padding="@dimen/screen_pad">
 
         <TextView
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/settings_title"
-            android:textColor="@color/yellow"
-            android:textSize="28sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="16dp" />
+            android:textAppearance="@style/TextAppearance.NavGuide.Title"
+            android:layout_marginBottom="@dimen/space_20" />
 
+        <!-- Emergency -->
         <TextView
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/settings_contact_label"
-            android:textColor="@color/white"
-            android:textSize="20sp" />
+            android:text="@string/settings_section_emergency"
+            android:textAppearance="@style/TextAppearance.NavGuide.Label"
+            android:layout_marginBottom="@dimen/space_8" />
 
         <EditText
             android:id="@+id/etContact"
             android:layout_width="match_parent"
-            android:layout_height="64dp"
+            android:layout_height="56dp"
             android:hint="@string/settings_contact_hint"
             android:inputType="phone"
-            android:textColor="@color/black"
-            android:textSize="20sp"
-            android:background="@color/white"
-            android:padding="12dp"
-            android:layout_marginBottom="16dp"
+            android:textColor="@color/text_primary"
+            android:textColorHint="@color/text_secondary"
+            android:textSize="17sp"
+            android:background="@drawable/bg_input"
+            android:paddingStart="@dimen/space_16"
+            android:paddingEnd="@dimen/space_16"
             android:contentDescription="@string/settings_contact_label" />
+
+        <Button
+            android:id="@+id/btnEnableSms"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="@dimen/space_8"
+            android:text="@string/settings_sms_button"
+            android:textSize="14sp"
+            app:cornerRadius="@dimen/radius_medium"
+            android:contentDescription="@string/settings_sms_button" />
+
+        <TextView
+            android:id="@+id/tvSmsStatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/settings_sms_button_hint"
+            android:textAppearance="@style/TextAppearance.NavGuide.Caption"
+            android:layout_marginTop="@dimen/space_4" />
+
+        <!-- Movement -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/settings_section_movement"
+            android:textAppearance="@style/TextAppearance.NavGuide.Label"
+            android:layout_marginTop="@dimen/space_24"
+            android:layout_marginBottom="@dimen/space_8" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/settings_stride_label"
-            android:textColor="@color/white"
-            android:textSize="20sp" />
+            android:textAppearance="@style/TextAppearance.NavGuide.Body" />
 
         <SeekBar
             android:id="@+id/sbStride"
@@ -57,74 +85,87 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="0.70 m"
-            android:textColor="@color/yellow"
-            android:textSize="18sp"
-            android:layout_marginBottom="16dp" />
+            android:textAppearance="@style/TextAppearance.NavGuide.Caption"
+            android:textColor="@color/amber" />
+
+        <!-- Voice & feedback -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/settings_section_voice"
+            android:textAppearance="@style/TextAppearance.NavGuide.Label"
+            android:layout_marginTop="@dimen/space_24"
+            android:layout_marginBottom="@dimen/space_8" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/settings_tts_speed"
-            android:textColor="@color/white"
-            android:textSize="20sp" />
+            android:textAppearance="@style/TextAppearance.NavGuide.Body" />
 
         <RadioGroup
             android:id="@+id/rgSpeed"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginBottom="16dp">
+            android:layout_marginBottom="@dimen/space_8">
 
             <RadioButton
                 android:id="@+id/rbSlow"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/tts_slow"
-                android:textColor="@color/white" />
+                android:textColor="@color/text_primary" />
 
             <RadioButton
                 android:id="@+id/rbNormal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/tts_normal"
-                android:textColor="@color/white" />
+                android:textColor="@color/text_primary" />
 
             <RadioButton
                 android:id="@+id/rbFast"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/tts_fast"
-                android:textColor="@color/white" />
+                android:textColor="@color/text_primary" />
         </RadioGroup>
 
         <Button
             android:id="@+id/btnTestVoice"
+            style="@style/Widget.Material3.Button.OutlinedButton"
             android:layout_width="match_parent"
-            android:layout_height="72dp"
+            android:layout_height="48dp"
             android:text="@string/btn_test_voice"
-            android:textSize="20sp"
-            android:backgroundTint="@color/white"
-            android:textColor="@color/black"
+            android:textSize="14sp"
+            app:cornerRadius="@dimen/radius_medium"
+            app:icon="@drawable/ic_play"
+            app:iconGravity="textStart"
+            app:iconSize="18dp"
             android:contentDescription="@string/btn_test_voice" />
 
         <Button
             android:id="@+id/btnTestVibration"
+            style="@style/Widget.Material3.Button.OutlinedButton"
             android:layout_width="match_parent"
-            android:layout_height="72dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="@dimen/space_8"
             android:text="@string/btn_test_vibration"
-            android:textSize="20sp"
-            android:backgroundTint="@color/white"
-            android:textColor="@color/black"
+            android:textSize="14sp"
+            app:cornerRadius="@dimen/radius_medium"
             android:contentDescription="@string/btn_test_vibration" />
 
         <Button
             android:id="@+id/btnSave"
             android:layout_width="match_parent"
-            android:layout_height="72dp"
+            android:layout_height="@dimen/button_height"
+            android:layout_marginTop="@dimen/space_24"
             android:text="@string/btn_save"
-            android:textSize="22sp"
-            android:backgroundTint="@color/yellow"
-            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:backgroundTint="@color/amber"
+            android:textColor="@color/text_on_accent"
+            app:cornerRadius="@dimen/radius_medium"
             android:contentDescription="@string/btn_save" />
 
     </LinearLayout>

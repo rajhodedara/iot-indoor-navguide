@@ -1,37 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="20dp"
-    android:background="@color/black">
+    android:background="@color/bg"
+    android:paddingStart="@dimen/screen_pad"
+    android:paddingEnd="@dimen/screen_pad"
+    android:paddingTop="@dimen/space_16">
 
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/beacon_title"
-        android:textColor="@color/yellow"
-        android:textSize="28sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="8dp" />
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="@dimen/space_12">
+
+        <ImageView
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:src="@drawable/ic_beacon"
+            android:tint="@color/amber"
+            android:importantForAccessibility="no" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/space_12"
+            android:text="@string/beacon_title"
+            android:textAppearance="@style/TextAppearance.NavGuide.Title" />
+    </LinearLayout>
 
     <TextView
         android:id="@+id/tvBeaconStatus"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/beacon_status_idle"
-        android:textColor="@color/white"
-        android:textSize="22sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="8dp" />
+        android:textAppearance="@style/TextAppearance.NavGuide.Headline"
+        android:background="@drawable/bg_card"
+        android:padding="@dimen/space_16"
+        android:lineSpacingMultiplier="1.2" />
+
+    <TextView
+        android:id="@+id/tvBeaconHint"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/beacon_keep_open"
+        android:textAppearance="@style/TextAppearance.NavGuide.Caption"
+        android:layout_marginTop="@dimen/space_8" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/beacon_keep_open"
-        android:textColor="@color/text_secondary"
-        android:textSize="16sp"
-        android:layout_marginBottom="12dp" />
+        android:text="@string/beacon_pick"
+        android:textAppearance="@style/TextAppearance.NavGuide.Label"
+        android:layout_marginTop="@dimen/space_16"
+        android:layout_marginBottom="@dimen/space_8" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -48,11 +72,17 @@
     <Button
         android:id="@+id/btnToggleBroadcast"
         android:layout_width="match_parent"
-        android:layout_height="88dp"
+        android:layout_height="@dimen/button_height_hero"
+        android:layout_marginTop="@dimen/space_12"
+        android:layout_marginBottom="@dimen/space_20"
         android:text="@string/btn_start_broadcast"
-        android:textSize="22sp"
-        android:backgroundTint="@color/yellow"
-        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:backgroundTint="@color/amber"
+        android:textColor="@color/text_on_accent"
+        app:cornerRadius="@dimen/radius_medium"
+        app:icon="@drawable/ic_play"
+        app:iconGravity="textStart"
+        app:iconTint="@color/text_on_accent"
         android:contentDescription="@string/btn_start_broadcast" />
 
 </LinearLayout>

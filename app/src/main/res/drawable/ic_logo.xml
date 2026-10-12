@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- In-app brand mark: navigator arrow on its plate. Used in the main header. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="40dp" android:height="40dp"
+    android:viewportWidth="48" android:viewportHeight="48">
+    <path
+        android:pathData="M24 0 A24 24 0 1 1 23.99 0 Z"
+        android:fillColor="#0D1B2A" />
+    <path
+        android:pathData="M24 10 L31 34 L24 29.5 L17 34 Z"
+        android:strokeColor="#FFC24B" android:strokeWidth="2.5"
+        android:strokeLineJoin="round"
+        android:fillColor="#FFC24B" />
+</vector>

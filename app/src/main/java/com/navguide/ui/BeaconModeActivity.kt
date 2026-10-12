@@ -1,6 +1,7 @@
 package com.navguide.ui
 
 import android.os.Bundle
+import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -16,6 +17,7 @@ class BeaconModeActivity : AppCompatActivity() {
     private lateinit var status: TextView
     private lateinit var toggle: Button
     private var selected: MapNode? = null
+    private var selectedRow: View? = null
     private var broadcasting = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,19 +38,19 @@ class BeaconModeActivity : AppCompatActivity() {
         }
 
         doc.nodes.filter { it.beaconMinor != null }.sortedBy { it.beaconMinor }.forEach { node ->
-            val b = Button(this)
-            b.text = "${doc.displayName(node)} (minor ${node.beaconMinor})"
-            b.textSize = 18f
-            val lp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, dp(60))
-            lp.bottomMargin = dp(8)
-            b.layoutParams = lp
-            b.setOnClickListener {
-                if (!broadcasting) {
-                    selected = node
-                    status.text = "Selected: ${node.name}"
-                }
+            val row = layoutInflater.inflate(R.layout.row_beacon, container, false)
+            row.findViewById<TextView>(R.id.tvBeaconName).text = doc.displayName(node)
+            row.findViewById<TextView>(R.id.tvBeaconMinor).text = "Beacon minor ${node.beaconMinor}"
+            row.contentDescription = "Broadcast as ${doc.displayName(node)}"
+            row.setOnClickListener {
+                if (broadcasting) return@setOnClickListener
+                selectedRow?.setBackgroundResource(R.drawable.bg_row)
+                row.setBackgroundResource(R.drawable.bg_row_selected)
+                selectedRow = row
+                selected = node
+                status.text = "Selected: ${doc.displayName(node)}"
             }
-            container.addView(b)
+            container.addView(row)
         }
 
         toggle.setOnClickListener {
@@ -69,7 +71,7 @@ class BeaconModeActivity : AppCompatActivity() {
                         if (ok) {
                             broadcasting = true
                             toggle.text = getString(R.string.btn_stop_broadcast)
-                            status.text = "Broadcasting as ${node.name} (minor $minor)"
+                            status.text = "Broadcasting as ${doc.displayName(node)} (minor $minor)"
                         } else {
                             status.text = err ?: "Failed to start broadcast."
                         }
@@ -83,6 +85,4 @@ class BeaconModeActivity : AppCompatActivity() {
         super.onDestroy()
         emitter.stop()
     }
-
-    private fun dp(v: Int): Int = (v * resources.displayMetrics.density).toInt()
 }

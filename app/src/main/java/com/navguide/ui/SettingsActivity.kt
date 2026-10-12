@@ -6,8 +6,10 @@ import android.widget.EditText
 import android.widget.RadioGroup
 import android.widget.SeekBar
 import android.widget.TextView
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.navguide.R
+import com.navguide.ble.BlePermissions
 import com.navguide.data.Prefs
 import com.navguide.guidance.HapticPattern
 import com.navguide.guidance.HapticsImpl
@@ -18,6 +20,13 @@ class SettingsActivity : AppCompatActivity() {
     private lateinit var prefs: Prefs
     private lateinit var speaker: SpeakerTts
     private lateinit var haptics: HapticsImpl
+    private lateinit var tvSmsStatus: TextView
+
+    private val smsPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
+            updateSmsStatus()
+            speaker.speak(getString(if (granted) R.string.settings_sms_on else R.string.settings_sms_denied))
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,6 +37,17 @@ class SettingsActivity : AppCompatActivity() {
 
         val etContact = findViewById<EditText>(R.id.etContact)
         etContact.setText(prefs.emergencyContact ?: "")
+
+        tvSmsStatus = findViewById(R.id.tvSmsStatus)
+        updateSmsStatus()
+        findViewById<Button>(R.id.btnEnableSms).setOnClickListener {
+            if (BlePermissions.hasSms(this)) {
+                updateSmsStatus()
+                speaker.speak(getString(R.string.settings_sms_on))
+            } else {
+                smsPermissionLauncher.launch(android.Manifest.permission.SEND_SMS)
+            }
+        }
 
         val sbStride = findViewById<SeekBar>(R.id.sbStride)
         val tvStrideValue = findViewById<TextView>(R.id.tvStrideValue)
@@ -75,6 +95,12 @@ class SettingsActivity : AppCompatActivity() {
             prefs.ttsSpeed = speedFromUi()
             finish()
         }
+    }
+
+    private fun updateSmsStatus() {
+        tvSmsStatus.text = getString(
+            if (BlePermissions.hasSms(this)) R.string.settings_sms_on else R.string.settings_sms_button_hint
+        )
     }
 
     override fun onDestroy() {
