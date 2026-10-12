@@ -33,6 +33,16 @@
         android:textColor="@color/yellow"
         android:textSize="20sp"
         android:gravity="center"
+        android:layout_marginBottom="4dp" />
+
+    <TextView
+        android:id="@+id/tvBluetooth"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Bluetooth: checking…"
+        android:textColor="@color/text_secondary"
+        android:textSize="13sp"
+        android:gravity="center"
         android:layout_marginBottom="8dp" />
 
     <TextView
@@ -67,16 +77,34 @@
             android:contentDescription="@string/btn_sim_hop" />
     </LinearLayout>
 
-    <Button
-        android:id="@+id/btnSimSteps"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="52dp"
-        android:text="@string/btn_sim_steps10"
-        android:textSize="14sp"
-        android:backgroundTint="@color/white"
-        android:textColor="@color/black"
-        android:layout_marginBottom="8dp"
-        android:contentDescription="@string/btn_sim_steps10" />
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="8dp">
+
+        <Button
+            android:id="@+id/btnSimSteps"
+            android:layout_width="0dp"
+            android:layout_height="52dp"
+            android:layout_weight="1"
+            android:text="@string/btn_sim_steps10"
+            android:textSize="14sp"
+            android:backgroundTint="@color/white"
+            android:textColor="@color/black"
+            android:contentDescription="@string/btn_sim_steps10" />
+
+        <Button
+            android:id="@+id/btnAutoWalk"
+            android:layout_width="0dp"
+            android:layout_height="52dp"
+            android:layout_weight="1"
+            android:text="@string/btn_auto_walk"
+            android:textSize="14sp"
+            android:backgroundTint="@color/yellow"
+            android:textColor="@color/black"
+            android:contentDescription="@string/btn_auto_walk" />
+    </LinearLayout>
 
     <Button
         android:id="@+id/btnRepeat"

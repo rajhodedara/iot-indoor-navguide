@@ -10,6 +10,7 @@
     <string name="sos_desc">Emergency SOS. Long press to trigger.</string>
 
     <string name="nav_title">Navigating</string>
+    <string name="nav_waiting_hint">Waiting for beacon signal. No beacons nearby? Tap Auto-walk route below, or pick a location and tap Hop here.</string>
     <string name="status_waiting_for_beacons">Waiting for beacon signal, keep walking…</string>
     <string name="btn_repeat">Repeat last instruction</string>
     <string name="btn_stop_nav">Stop navigation</string>
@@ -39,6 +40,8 @@
     <string name="btn_sim_steps5">Simulate 5 steps</string>
     <string name="btn_sim_steps10">Simulate 10 steps</string>
     <string name="btn_sim_hop">Hop here</string>
+    <string name="btn_auto_walk">Auto-walk route</string>
+    <string name="btn_auto_walk_stop">Stop auto-walk</string>
     <string name="demo_label">Demo controls (simulator):</string>
     <string name="btn_reset">Reset</string>
     <string name="sim_status_idle">No active navigation session</string>

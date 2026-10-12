@@ -21,8 +21,8 @@ class DemoMapTest {
     @Test
     fun `schema basics`() {
         assertEquals(1, doc.schemaVersion)
-        assertEquals(12, doc.nodes.size)
-        assertEquals(11, doc.edges.size)
+        assertEquals(24, doc.nodes.size)
+        assertEquals(23, doc.edges.size)
         assertEquals("E2C56DB5-DFFB-48D2-B060-D0F5A71096E0", doc.uuid)
     }
 
@@ -42,11 +42,12 @@ class DemoMapTest {
     }
 
     @Test
-    fun `destinations include rooms and exits`() {
+    fun `destinations include real rooms`() {
         val names = doc.destinationNodes.map { it.name }
-        assertTrue(names.contains("Room 101"))
-        assertTrue(names.contains("Exit East"))
-        assertTrue(names.contains("Main Entrance"))
+        assertTrue(names.contains("Library"))
+        assertTrue(names.contains("Canteen"))
+        assertTrue(names.contains("Exit (East)"))
+        assertTrue(names.contains("Main Entry Exit"))
     }
 
     @Test
@@ -54,13 +55,13 @@ class DemoMapTest {
         val reparsed = MapDoc.parse(doc.toJson())
         assertEquals(doc.nodes.size, reparsed.nodes.size)
         assertEquals(doc.edges.size, reparsed.edges.size)
-        assertEquals(doc.nodes.first { it.id == "r102" }.beaconMinor, reparsed.nodes.first { it.id == "r102" }.beaconMinor)
-        assertEquals(doc.edgeMeters("ja", "jb"), reparsed.edgeMeters("ja", "jb"))
+        assertEquals(doc.nodes.first { it.id == "library" }.beaconMinor, reparsed.nodes.first { it.id == "library" }.beaconMinor)
+        assertEquals(doc.edgeMeters("corridor1", "stair2"), reparsed.edgeMeters("corridor1", "stair2"))
     }
 
     @Test
     fun `a custom college-style map parses, validates and routes`() {
-        // Proves the app is map-agnostic: any well-formed building map works, not just the demo.
+        // Proves the app is map-agnostic: any well-formed building map works, not just the bundled one.
         val json = """
         {
           "schemaVersion": 1,

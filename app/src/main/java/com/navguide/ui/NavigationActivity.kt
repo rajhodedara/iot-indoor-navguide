@@ -1,11 +1,15 @@
 package com.navguide.ui
 
+import android.bluetooth.BluetoothManager
 import android.content.Context
+import android.content.Intent
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.WindowManager
 import android.widget.ArrayAdapter
 import android.widget.Button
@@ -28,6 +32,7 @@ class NavigationActivity : AppCompatActivity(), SensorEventListener {
 
     companion object {
         const val EXTRA_DEST = "extra_dest"
+        private const val AUTO_WALK_INTERVAL_MS = 450L
     }
 
     private lateinit var session: NavigationSession
@@ -36,6 +41,10 @@ class NavigationActivity : AppCompatActivity(), SensorEventListener {
     private lateinit var sensorManager: SensorManager
     private lateinit var tvInstruction: TextView
     private lateinit var tvLocation: TextView
+    private lateinit var tvBluetooth: TextView
+
+    private val autoWalkHandler = Handler(Looper.getMainLooper())
+    private var autoWalking = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,6 +57,7 @@ class NavigationActivity : AppCompatActivity(), SensorEventListener {
         val haptics = HapticsImpl(this)
         tvInstruction = findViewById(R.id.tvInstruction)
         tvLocation = findViewById(R.id.tvLocation)
+        tvBluetooth = findViewById(R.id.tvBluetooth)
 
         session = NavigationSession(
             doc = doc,
@@ -60,7 +70,9 @@ class NavigationActivity : AppCompatActivity(), SensorEventListener {
                     tvLocation.text = "Near: " + (session.currentLocationName ?: "unknown")
                 }
             },
-            onArrived = { }
+            onArrived = {
+                runOnUiThread { stopAutoWalk() }
+            }
         )
 
         val destId = intent.getStringExtra(EXTRA_DEST)
@@ -72,6 +84,7 @@ class NavigationActivity : AppCompatActivity(), SensorEventListener {
 
         findViewById<Button>(R.id.btnRepeat).setOnClickListener { session.repeatLastInstruction() }
         findViewById<Button>(R.id.btnStop).setOnClickListener {
+            stopAutoWalk()
             session.stop()
             finish()
         }
@@ -86,23 +99,64 @@ class NavigationActivity : AppCompatActivity(), SensorEventListener {
         )
         findViewById<Button>(R.id.btnSimHop).setOnClickListener {
             val idx = spinner.selectedItemPosition
-            if (idx in simNodes.indices) session.onNodeHop(simNodes[idx].id)
+            if (idx in simNodes.indices) {
+                session.onNodeHop(simNodes[idx].id)
+            }
         }
         findViewById<Button>(R.id.btnSimSteps).setOnClickListener {
             repeat(10) { session.onStep() }
+        }
+        findViewById<Button>(R.id.btnAutoWalk).setOnClickListener {
+            if (autoWalking) stopAutoWalk() else startAutoWalk()
         }
 
         lifecycleScope.launch { BeaconBus.readings.collect { r -> session.onReading(r) } }
 
         session.start(destId)
+        if (session.currentLocationName == null) {
+            tvInstruction.text = getString(R.string.nav_waiting_hint)
+        }
         sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
         BleScannerService.start(this)
+    }
+
+    /** Demo: walks the whole route automatically, ticking real guidance logic at a human pace. */
+    private fun startAutoWalk() {
+        if (!session.startAutoTour()) return
+        autoWalking = true
+        val btn = findViewById<Button>(R.id.btnAutoWalk)
+        btn.text = getString(R.string.btn_auto_walk_stop)
+        autoWalkHandler.post(object : Runnable {
+            override fun run() {
+                if (!autoWalking) return
+                if (!session.active) {
+                    stopAutoWalk()
+                    return
+                }
+                session.demoTick()
+                autoWalkHandler.postDelayed(this, AUTO_WALK_INTERVAL_MS)
+            }
+        })
+    }
+
+    private fun stopAutoWalk() {
+        autoWalking = false
+        autoWalkHandler.removeCallbacksAndMessages(null)
+        runOnUiThread {
+            findViewById<Button>(R.id.btnAutoWalk).text = getString(R.string.btn_auto_walk)
+        }
     }
 
     override fun onResume() {
         super.onResume()
         sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)?.let {
             sensorManager.registerListener(this, it, SensorManager.SENSOR_DELAY_GAME)
+        }
+        val adapter = (getSystemService(Context.BLUETOOTH_SERVICE) as? BluetoothManager)?.adapter
+        tvBluetooth.text = when {
+            adapter == null -> "Bluetooth: not available on this device"
+            !adapter.isEnabled -> "Bluetooth: OFF — turn it on to detect real beacons"
+            else -> "Bluetooth: on — scanning for beacons"
         }
     }
 
@@ -127,6 +181,7 @@ class NavigationActivity : AppCompatActivity(), SensorEventListener {
 
     override fun onDestroy() {
         super.onDestroy()
+        stopAutoWalk()
         session.stop()
         speaker.shutdown()
         BleScannerService.stop(this)

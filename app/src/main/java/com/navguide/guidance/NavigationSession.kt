@@ -71,7 +71,11 @@ class NavigationSession(
     fun onStep() {
         if (!active) return
         stepsSinceNode++
-        evaluateSegmentProgress()
+        if (route.isEmpty()) {
+            updateStatus("Waiting for position. Steps so far: $stepsSinceNode. Use the demo controls below to set your location.")
+        } else {
+            evaluateSegmentProgress()
+        }
     }
 
     fun repeatLastInstruction() {
@@ -79,6 +83,27 @@ class NavigationSession(
             speaker.speak(lastInstruction)
         } else {
             speaker.speak("No instruction yet.")
+        }
+    }
+
+    /** Demo: anchor at the entrance if the user hasn't set a position, then begin the route. */
+    fun startAutoTour(): Boolean {
+        if (!active) return false
+        if (tracker.currentNodeId == null) {
+            val startNode = doc.nodes.firstOrNull { it.type == "entrance" } ?: doc.nodes.firstOrNull() ?: return false
+            tracker.forceNode(startNode.id)
+            beginRouteFrom(startNode.id)
+        }
+        return route.isNotEmpty()
+    }
+
+    /** Demo/simulator: advance one step and automatically move to the next route node when its segment completes. */
+    fun demoTick() {
+        if (!active || route.isEmpty()) return
+        onStep()
+        if (!active) return
+        if (currentIndex < route.size - 1 && stepsSinceNode >= stepsForSegment(currentIndex)) {
+            onNodeHop(route[currentIndex + 1])
         }
     }
 

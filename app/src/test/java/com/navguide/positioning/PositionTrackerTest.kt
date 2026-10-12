@@ -22,8 +22,8 @@ class PositionTrackerTest {
         val tracker = PositionTracker(doc)
         assertNull(tracker.onReading(reading(2, -60))) // first hit: candidate only
         val snapped = tracker.onReading(reading(2, -60))
-        assertEquals("ja", snapped)
-        assertEquals("ja", tracker.currentNodeId)
+        assertEquals("stair1", snapped)
+        assertEquals("stair1", tracker.currentNodeId)
     }
 
     @Test
@@ -37,16 +37,16 @@ class PositionTrackerTest {
     @Test
     fun `hysteresis prevents flapping between nodes`() {
         val tracker = PositionTracker(doc)
-        // Settle on ja (minor 2).
+        // Settle on stair1 (minor 2).
         tracker.onReading(reading(2, -60)); tracker.onReading(reading(2, -60))
-        assertEquals("ja", tracker.currentNodeId)
-        // Now a slightly stronger reading for jb (minor 5) should NOT flip immediately
+        assertEquals("stair1", tracker.currentNodeId)
+        // A slightly stronger reading for corridor1 (minor 3) should NOT flip immediately
         // when the advantage is below the hysteresis threshold.
-        repeat(4) { tracker.onReading(reading(5, -58)) }
-        assertEquals("ja", tracker.currentNodeId)
-        // A decisively stronger jb (rssi -50 vs ja smoothed around -60) flips it.
-        repeat(3) { tracker.onReading(reading(5, -45)) }
-        assertEquals("jb", tracker.currentNodeId)
+        repeat(4) { tracker.onReading(reading(3, -56)) }
+        assertEquals("stair1", tracker.currentNodeId)
+        // A decisively stronger corridor1 (rssi -45 vs stair1 around -60) flips it.
+        repeat(4) { tracker.onReading(reading(3, -45)) }
+        assertEquals("corridor1", tracker.currentNodeId)
     }
 
     @Test
