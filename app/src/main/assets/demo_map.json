@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "name": "Demo Floor - Department Building",
+  "uuid": "E2C56DB5-DFFB-48D2-B060-D0F5A71096E0",
+  "floor": { "widthM": 40, "heightM": 25, "pxPerM": 20, "image": null },
+  "nodes": [
+    { "id": "entrance", "x": 2,  "y": 12, "name": "Main Entrance", "type": "entrance",     "beaconMinor": 1 },
+    { "id": "ja",       "x": 10, "y": 12, "name": "Junction A",    "type": "intersection", "beaconMinor": 2 },
+    { "id": "r101",     "x": 10, "y": 6,  "name": "Room 101",      "type": "room",         "beaconMinor": 3 },
+    { "id": "lab1",     "x": 10, "y": 18, "name": "Lab 1",         "type": "room",         "beaconMinor": 4 },
+    { "id": "jb",       "x": 18, "y": 12, "name": "Junction B",    "type": "intersection", "beaconMinor": 5 },
+    { "id": "r102",     "x": 18, "y": 6,  "name": "Room 102",      "type": "room",         "beaconMinor": 6 },
+    { "id": "staff",    "x": 18, "y": 18, "name": "Staff Room",    "type": "room",         "beaconMinor": 7 },
+    { "id": "jc",       "x": 26, "y": 12, "name": "Junction C",    "type": "intersection", "beaconMinor": 8 },
+    { "id": "r103",     "x": 26, "y": 6,  "name": "Room 103",      "type": "room",         "beaconMinor": 9 },
+    { "id": "jd",       "x": 32, "y": 12, "name": "Junction D",    "type": "intersection", "beaconMinor": 10 },
+    { "id": "stairA",   "x": 32, "y": 6,  "name": "Staircase A",   "type": "stairs",       "beaconMinor": 11 },
+    { "id": "exitE",    "x": 36, "y": 12, "name": "Exit East",     "type": "exit",         "beaconMinor": 12 }
+  ],
+  "edges": [
+    { "from": "entrance", "to": "ja",     "m": 8 },
+    { "from": "ja",       "to": "jb",     "m": 8 },
+    { "from": "jb",       "to": "jc",     "m": 8 },
+    { "from": "jc",       "to": "jd",     "m": 6 },
+    { "from": "ja",       "to": "r101",   "m": 6 },
+    { "from": "ja",       "to": "lab1",   "m": 6 },
+    { "from": "jb",       "to": "r102",   "m": 6 },
+    { "from": "jb",       "to": "staff",  "m": 6 },
+    { "from": "jc",       "to": "r103",   "m": 6 },
+    { "from": "jd",       "to": "stairA", "m": 6 },
+    { "from": "jd",       "to": "exitE",  "m": 4 }
+  ]
+}

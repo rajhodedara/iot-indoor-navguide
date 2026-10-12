@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<!--
+  NavGuide Map Editor — single-file, offline.
+  Usage: open in any browser. Load a floor-plan image (optional), place nodes (beacon
+  locations) and connect walkable edges, then export demo_map.json for the app
+  (schema v1 — see docs/MAP_FORMAT.md).
+  Coordinates are meters; pixels convert via pxPerM.
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>NavGuide Map Editor</title>
+<style>
+  :root { --bg:#0d1117; --panel:#161b22; --line:#30363d; --fg:#e6edf3; --dim:#8b949e; --acc:#ffd54f; --danger:#f85149; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--fg); font-family:system-ui,Segoe UI,Arial,sans-serif; display:flex; height:100vh; }
+  #left { width:250px; padding:12px; border-right:1px solid var(--line); overflow:auto; }
+  #mid { flex:1; display:flex; flex-direction:column; }
+  #right { width:280px; padding:12px; border-left:1px solid var(--line); overflow:auto; }
+  h1 { font-size:16px; margin:0 0 8px; color:var(--acc); }
+  h2 { font-size:13px; margin:14px 0 6px; color:var(--dim); text-transform:uppercase; letter-spacing:.5px; }
+  button { background:#21262d; color:var(--fg); border:1px solid var(--line); border-radius:6px; padding:7px 10px; margin:2px 0; cursor:pointer; width:100%; font-size:13px; }
+  button:hover { border-color:var(--acc); }
+  button.active { background:var(--acc); color:#000; border-color:var(--acc); font-weight:600; }
+  button.danger { color:var(--danger); }
+  button.primary { background:var(--acc); color:#000; font-weight:600; }
+  input, select { width:100%; background:#0d1117; color:var(--fg); border:1px solid var(--line); border-radius:6px; padding:6px; margin:3px 0; font-size:13px; }
+  label { font-size:12px; color:var(--dim); display:block; margin-top:6px; }
+  #canvasWrap { flex:1; overflow:auto; position:relative; }
+  canvas { display:block; background:#111820; cursor:crosshair; }
+  .row { display:flex; gap:6px; }
+  .row > * { flex:1; }
+  #log { font-size:12px; color:var(--dim); white-space:pre-wrap; border-top:1px solid var(--line); padding:8px; max-height:130px; overflow:auto; }
+  .item { border:1px solid var(--line); border-radius:6px; padding:6px; margin:4px 0; font-size:12px; display:flex; justify-content:space-between; align-items:center; gap:6px;}
+  .item button { width:auto; margin:0; padding:2px 6px; font-size:11px; }
+  .item.sel { border-color:var(--acc); }
+  .hint { font-size:11px; color:var(--dim); margin-top:6px; }
+</style>
+</head>
+<body>
+<div id="left">
+  <h1>NavGuide Map Editor</h1>
+  <h2>Mode</h2>
+  <button id="mSelect" class="active">Select / Drag</button>
+  <button id="mAdd">Add Node (click map)</button>
+  <button id="mConnect">Connect (click 2 nodes)</button>
+  <button id="mDelete">Delete (click node/edge)</button>
+
+  <h2>Floor</h2>
+  <label>Background image (optional)</label>
+  <input type="file" id="imgFile" accept="image/*" />
+  <button id="clearImg">Clear image</button>
+  <label>Pixels per meter</label>
+  <input type="number" id="pxPerM" value="20" min="1" step="1" />
+
+  <h2>Map</h2>
+  <label>Map name</label>
+  <input type="text" id="mapName" value="Demo Floor - Department Building" />
+  <label>iBeacon UUID (shared)</label>
+  <input type="text" id="mapUuid" value="E2C56DB5-DFFB-48D2-B060-D0F5A71096E0" />
+
+  <h2>Actions</h2>
+  <button id="validate">Validate map</button>
+  <button id="export" class="primary">Export JSON</button>
+  <label>Import JSON</label>
+  <input type="file" id="importFile" accept=".json,application/json" />
+</div>
+
+<div id="mid">
+  <div id="canvasWrap"><canvas id="cv" width="960" height="620"></canvas></div>
+  <div id="log"></div>
+</div>
+
+<div id="right">
+  <h2>Selected node</h2>
+  <div id="nodePanel"><div class="hint">Click a node with the Select tool to edit it.</div></div>
+  <h2>Nodes</h2>
+  <div id="nodeList"></div>
+  <h2>Edges</h2>
+  <div id="edgeList"></div>
+</div>
+
+<script>
+'use strict';
+const cv = document.getElementById('cv');
+const ctx = cv.getContext('2d');
+const logBox = document.getElementById('log');
+
+const state = {
+  mode: 'select',
+  nodes: [],            // {id, x, y, name, type, beaconMinor|null}
+  edges: [],            // {from, to, m}
+  selected: null,       // node id
+  connectFirst: null,   // node id
+  img: null,
+  drag: null,           // {id, dx, dy}
+  nextId: 1,
+};
+
+function log(msg) { logBox.textContent = msg + '\n' + logBox.textContent.slice(0, 4000); }
+
+// ---------- coordinate helpers ----------
+function pxPerM() { return Math.max(1, Number(document.getElementById('pxPerM').value || 20)); }
+function nodeRadius() { return 12; }
+
+// ---------- rendering ----------
+function draw() {
+  ctx.clearRect(0, 0, cv.width, cv.height);
+  if (state.img) ctx.drawImage(state.img, 0, 0, cv.width, cv.height);
+
+  // grid
+  const step = pxPerM() * 2; // 2 m grid
+  ctx.strokeStyle = 'rgba(255,255,255,0.06)';
+  ctx.lineWidth = 1;
+  for (let x = 0; x < cv.width; x += step) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, cv.height); ctx.stroke(); }
+  for (let y = 0; y < cv.height; y += step) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(cv.width, y); ctx.stroke(); }
+
+  // edges
+  ctx.lineWidth = 3;
+  state.edges.forEach(e => {
+    const a = findNode(e.from), b = findNode(e.to);
+    if (!a || !b) return;
+    ctx.strokeStyle = '#7aa2ff';
+    ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
+    const mx = (a.x + b.x) / 2, my = (a.y + b.y) / 2;
+    ctx.fillStyle = '#9fb6dd';
+    ctx.font = '12px system-ui';
+    ctx.fillText(e.m.toFixed(1) + 'm', mx + 4, my - 4);
+  });
+
+  // nodes
+  state.nodes.forEach(n => {
+    const isSel = state.selected === n.id;
+    const isConnect = state.connectFirst === n.id;
+    ctx.beginPath();
+    ctx.arc(n.x, n.y, nodeRadius(), 0, Math.PI * 2);
+    ctx.fillStyle = n.beaconMinor != null ? '#ffd54f' : '#58a6ff';
+    ctx.fill();
+    ctx.lineWidth = isSel || isConnect ? 4 : 2;
+    ctx.strokeStyle = isSel ? '#ffffff' : (isConnect ? '#f85149' : '#0d1117');
+    ctx.stroke();
+    ctx.fillStyle = '#e6edf3';
+    ctx.font = '13px system-ui';
+    ctx.fillText(n.name || n.id, n.x + nodeRadius() + 4, n.y + 4);
+  });
+}
+
+function findNode(id) { return state.nodes.find(n => n.id === id); }
+
+// ---------- mouse ----------
+function canvasPos(evt) {
+  const r = cv.getBoundingClientRect();
+  return { x: Math.round(evt.clientX - r.left), y: Math.round(evt.clientY - r.top) };
+}
+function hitNode(pos) {
+  return state.nodes.find(n => Math.hypot(n.x - pos.x, n.y - pos.y) <= nodeRadius() + 3) || null;
+}
+function hitEdge(pos) {
+  for (const e of state.edges) {
+    const a = findNode(e.from), b = findNode(e.to);
+    if (!a || !b) continue;
+    const d = distToSegment(pos, a, b);
+    if (d < 6) return e;
+  }
+  return null;
+}
+function distToSegment(p, a, b) {
+  const l2 = (b.x - a.x) ** 2 + (b.y - a.y) ** 2;
+  if (l2 === 0) return Math.hypot(p.x - a.x, p.y - a.y);
+  let t = ((p.x - a.x) * (b.x - a.x) + (p.y - a.y) * (b.y - a.y)) / l2;
+  t = Math.max(0, Math.min(1, t));
+  return Math.hypot(p.x - (a.x + t * (b.x - a.x)), p.y - (a.y + t * (b.y - a.y)));
+}
+
+cv.addEventListener('mousedown', evt => {
+  const pos = canvasPos(evt);
+  const node = hitNode(pos);
+
+  if (state.mode === 'add') {
+    const id = 'n' + (state.nextId++);
+    state.nodes.push({ id, x: pos.x, y: pos.y, name: id, type: 'intersection', beaconMinor: null });
+    state.selected = id; renderPanels(); draw();
+    return;
+  }
+  if (state.mode === 'connect') {
+    if (!node) return;
+    if (!state.connectFirst) { state.connectFirst = node.id; }
+    else if (state.connectFirst !== node.id) {
+      addEdge(state.connectFirst, node.id);
+      state.connectFirst = null;
+    } else { state.connectFirst = null; }
+    draw(); return;
+  }
+  if (state.mode === 'delete') {
+    if (node) {
+      state.nodes = state.nodes.filter(n => n.id !== node.id);
+      state.edges = state.edges.filter(e => e.from !== node.id && e.to !== node.id);
+      if (state.selected === node.id) state.selected = null;
+      renderPanels(); draw();
+    } else {
+      const e = hitEdge(pos);
+      if (e) {
+        state.edges = state.edges.filter(x => x !== e);
+        renderPanels(); draw();
+      }
+    }
+    return;
+  }
+  // select mode
+  if (node) {
+    state.selected = node.id;
+    state.drag = { id: node.id, dx: pos.x - node.x, dy: pos.y - node.y };
+    renderPanels(); draw();
+  }
+});
+
+cv.addEventListener('mousemove', evt => {
+  if (!state.drag) return;
+  const pos = canvasPos(evt);
+  const n = findNode(state.drag.id);
+  if (!n) return;
+  n.x = Math.max(0, Math.min(cv.width, pos.x - state.drag.dx));
+  n.y = Math.max(0, Math.min(cv.height, pos.y - state.drag.dy));
+  draw();
+});
+
+window.addEventListener('mouseup', () => { state.drag = null; });
+
+// ---------- edges ----------
+function metersOf(a, b) { return Math.hypot(a.x - b.x, a.y - b.y) / pxPerM(); }
+function addEdge(fromId, toId) {
+  if (state.edges.some(e => (e.from === fromId && e.to === toId) || (e.from === toId && e.to === fromId))) {
+    log('Edge already exists: ' + fromId + ' - ' + toId); return;
+  }
+  const a = findNode(fromId), b = findNode(toId);
+  state.edges.push({ from: fromId, to: toId, m: Number(metersOf(a, b).toFixed(2)) });
+  renderPanels(); log('Edge added: ' + fromId + ' - ' + toId);
+}
+
+// ---------- panels ----------
+function renderPanels() {
+  // node list
+  const nl = document.getElementById('nodeList');
+  nl.innerHTML = '';
+  state.nodes.forEach(n => {
+    const d = document.createElement('div');
+    d.className = 'item' + (state.selected === n.id ? ' sel' : '');
+    d.innerHTML = `<span>${escapeHtml(n.name)} <span style="color:var(--dim)">(${n.id}${n.beaconMinor != null ? ', minor ' + n.beaconMinor : ''})</span></span>`;
+    const b = document.createElement('button');
+    b.textContent = 'edit';
+    b.onclick = () => { state.selected = n.id; renderPanels(); draw(); };
+    d.appendChild(b);
+    nl.appendChild(d);
+  });
+
+  // edge list
+  const el = document.getElementById('edgeList');
+  el.innerHTML = '';
+  state.edges.forEach((e, i) => {
+    const d = document.createElement('div');
+    d.className = 'item';
+    const input = document.createElement('input');
+    input.type = 'number'; input.step = '0.1'; input.min = '0.1'; input.value = e.m; input.style.width = '70px';
+    input.onchange = () => { e.m = Number(input.value); };
+    const span = document.createElement('span');
+    span.innerHTML = `${e.from} &harr; ${e.to}`;
+    const del = document.createElement('button');
+    del.textContent = 'x'; del.className = 'danger';
+    del.onclick = () => { state.edges.splice(i, 1); renderPanels(); draw(); };
+    const wrap = document.createElement('span');
+    wrap.style.display = 'flex'; wrap.style.alignItems = 'center'; wrap.style.gap = '6px'; wrap.style.flex = '1';
+    wrap.appendChild(span); wrap.appendChild(input); wrap.appendChild(del);
+    d.appendChild(wrap);
+    el.appendChild(d);
+  });
+
+  // node detail panel
+  const np = document.getElementById('nodePanel');
+  np.innerHTML = '';
+  const n = state.selected ? findNode(state.selected) : null;
+  if (!n) {
+    np.innerHTML = '<div class="hint">Click a node with the Select tool to edit it.</div>';
+    return;
+  }
+  const mk = (label, el) => { const l = document.createElement('label'); l.textContent = label; np.appendChild(l); np.appendChild(el); };
+  const nameI = document.createElement('input'); nameI.value = n.name;
+  nameI.oninput = () => { n.name = nameI.value; draw(); };
+  mk('Name', nameI);
+
+  const typeS = document.createElement('select');
+  ['entrance','corridor','intersection','room','stairs','elevator','exit'].forEach(t => {
+    const o = document.createElement('option'); o.value = t; o.textContent = t;
+    if (t === n.type) o.selected = true; typeS.appendChild(o);
+  });
+  typeS.onchange = () => { n.type = typeS.value; };
+  mk('Type', typeS);
+
+  const minorI = document.createElement('input'); minorI.type = 'number';
+  minorI.placeholder = 'blank = not a beacon'; minorI.min = '0';
+  if (n.beaconMinor != null) minorI.value = n.beaconMinor;
+  minorI.onchange = () => {
+    n.beaconMinor = minorI.value === '' ? null : Number(minorI.value);
+    draw(); renderPanels();
+  };
+  mk('Beacon minor', minorI);
+
+  const hint = document.createElement('div');
+  hint.className = 'hint';
+  hint.textContent = `id: ${n.id} — position ${(n.x / pxPerM()).toFixed(1)}m, ${(n.y / pxPerM()).toFixed(1)}m`;
+  np.appendChild(hint);
+}
+
+function escapeHtml(s) { return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+// ---------- toolbar ----------
+function setMode(m) {
+  state.mode = m;
+  state.connectFirst = null;
+  document.querySelectorAll('#left button').forEach(b => b.classList.remove('active'));
+  document.getElementById({select:'mSelect',add:'mAdd',connect:'mConnect',delete:'mDelete'}[m]).classList.add('active');
+  draw();
+}
+document.getElementById('mSelect').onclick = () => setMode('select');
+document.getElementById('mAdd').onclick = () => setMode('add');
+document.getElementById('mConnect').onclick = () => setMode('connect');
+document.getElementById('mDelete').onclick = () => setMode('delete');
+
+document.getElementById('imgFile').addEventListener('change', evt => {
+  const f = evt.target.files[0];
+  if (!f) return;
+  const img = new Image();
+  img.onload = () => { state.img = img; draw(); };
+  img.src = URL.createObjectURL(f);
+});
+document.getElementById('clearImg').onclick = () => { state.img = null; draw(); };
+
+// ---------- validate ----------
+function validate() {
+  const problems = [];
+  const ids = new Set();
+  const minors = new Set();
+  state.nodes.forEach(n => {
+    if (ids.has(n.id)) problems.push('Duplicate node id: ' + n.id);
+    ids.add(n.id);
+    if (!n.name || !n.name.trim()) problems.push('Node ' + n.id + ' has no name');
+    if (n.beaconMinor != null) {
+      if (minors.has(n.beaconMinor)) problems.push('Duplicate beaconMinor: ' + n.beaconMinor);
+      minors.add(n.beaconMinor);
+    }
+  });
+  state.edges.forEach(e => {
+    if (!ids.has(e.from) || !ids.has(e.to)) problems.push('Edge references missing node: ' + e.from + '-' + e.to);
+    if (!(e.m > 0)) problems.push('Edge ' + e.from + '-' + e.to + ' has invalid length');
+  });
+  // connectivity
+  if (state.nodes.length) {
+    const adj = new Map();
+    state.edges.forEach(e => {
+      if (!adj.has(e.from)) adj.set(e.from, []); if (!adj.has(e.to)) adj.set(e.to, []);
+      adj.get(e.from).push(e.to); adj.get(e.to).push(e.from);
+    });
+    const seen = new Set([state.nodes[0].id]);
+    const q = [state.nodes[0].id];
+    while (q.length) { const c = q.shift(); (adj.get(c) || []).forEach(nb => { if (!seen.has(nb)) { seen.add(nb); q.push(nb); } }); }
+    if (seen.size !== state.nodes.length) problems.push('Graph not fully connected (' + seen.size + '/' + state.nodes.length + ' reachable)');
+  }
+  if (problems.length === 0) log('VALID: no problems found. ' + state.nodes.length + ' nodes, ' + state.edges.length + ' edges.');
+  else log('PROBLEMS:\n- ' + problems.join('\n- '));
+}
+
+// ---------- export / import ----------
+function toJson() {
+  return {
+    schemaVersion: 1,
+    name: document.getElementById('mapName').value,
+    uuid: document.getElementById('mapUuid').value.trim(),
+    floor: { widthM: Number((cv.width / pxPerM()).toFixed(1)), heightM: Number((cv.height / pxPerM()).toFixed(1)), pxPerM: pxPerM(), image: null },
+    nodes: state.nodes.map(n => {
+      const o = { id: n.id, x: Number((n.x / pxPerM()).toFixed(2)), y: Number((n.y / pxPerM()).toFixed(2)), name: n.name, type: n.type };
+      if (n.beaconMinor != null) o.beaconMinor = n.beaconMinor;
+      return o;
+    }),
+    edges: state.edges.map(e => ({ from: e.from, to: e.to, m: e.m }))
+  };
+}
+
+document.getElementById('export').onclick = () => {
+  const blob = new Blob([JSON.stringify(toJson(), null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'demo_map.json';
+  a.click();
+  log('Exported demo_map.json — copy it to app/src/main/assets/demo_map.json');
+};
+
+document.getElementById('importFile').addEventListener('change', evt => {
+  const f = evt.target.files[0];
+  if (!f) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    try {
+      const j = JSON.parse(reader.result);
+      document.getElementById('mapName').value = j.name || '';
+      document.getElementById('mapUuid').value = j.uuid || '';
+      if (j.floor && j.floor.pxPerM) document.getElementById('pxPerM').value = j.floor.pxPerM;
+      const ppm = pxPerM();
+      state.nodes = (j.nodes || []).map(n => ({ id: n.id, x: n.x * ppm, y: n.y * ppm, name: n.name || n.id, type: n.type || 'room', beaconMinor: n.beaconMinor != null ? n.beaconMinor : null }));
+      state.edges = (j.edges || []).map(e => ({ from: e.from, to: e.to, m: e.m }));
+      state.selected = null; state.connectFirst = null;
+      let maxN = 0; state.nodes.forEach(n => { const m = /^n(\d+)$/.exec(n.id); if (m) maxN = Math.max(maxN, Number(m[1])); });
+      state.nextId = maxN + 1;
+      renderPanels(); draw();
+      log('Imported ' + state.nodes.length + ' nodes, ' + state.edges.length + ' edges.');
+    } catch (err) {
+      log('Import failed: ' + err.message);
+    }
+  };
+  reader.readAsText(f);
+});
+
+// ---------- boot ----------
+renderPanels();
+draw();
+log('Ready. Tip: set pxPerM first, then use Add Node to place beacon locations.');
+</script>
+</body>
+</html>

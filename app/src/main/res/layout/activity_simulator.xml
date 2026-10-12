@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="20dp"
+    android:background="@color/black">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/sim_title"
+        android:textColor="@color/yellow"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="8dp" />
+
+    <TextView
+        android:id="@+id/tvSimStatus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/sim_status_hint"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:layout_marginBottom="12dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/sim_hint"
+        android:textColor="@color/text_secondary"
+        android:textSize="16sp"
+        android:layout_marginBottom="12dp" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:id="@+id/llSimNodes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+    </ScrollView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnSteps5"
+            android:layout_width="0dp"
+            android:layout_height="72dp"
+            android:layout_weight="1"
+            android:text="@string/btn_sim_steps5"
+            android:textSize="18sp"
+            android:backgroundTint="@color/white"
+            android:textColor="@color/black"
+            android:contentDescription="@string/btn_sim_steps5" />
+
+        <Button
+            android:id="@+id/btnSteps10"
+            android:layout_width="0dp"
+            android:layout_height="72dp"
+            android:layout_weight="1"
+            android:text="@string/btn_sim_steps10"
+            android:textSize="18sp"
+            android:backgroundTint="@color/white"
+            android:textColor="@color/black"
+            android:contentDescription="@string/btn_sim_steps10" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btnSimReset"
+        android:layout_width="match_parent"
+        android:layout_height="72dp"
+        android:text="@string/btn_reset"
+        android:textSize="20sp"
+        android:backgroundTint="@color/yellow"
+        android:textColor="@color/black"
+        android:contentDescription="@string/btn_reset" />
+
+</LinearLayout>

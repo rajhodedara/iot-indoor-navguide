@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/settings_title"
+            android:textColor="@color/yellow"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="16dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/settings_contact_label"
+            android:textColor="@color/white"
+            android:textSize="20sp" />
+
+        <EditText
+            android:id="@+id/etContact"
+            android:layout_width="match_parent"
+            android:layout_height="64dp"
+            android:hint="@string/settings_contact_hint"
+            android:inputType="phone"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            android:background="@color/white"
+            android:padding="12dp"
+            android:layout_marginBottom="16dp"
+            android:contentDescription="@string/settings_contact_label" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/settings_stride_label"
+            android:textColor="@color/white"
+            android:textSize="20sp" />
+
+        <SeekBar
+            android:id="@+id/sbStride"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/tvStrideValue"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="0.70 m"
+            android:textColor="@color/yellow"
+            android:textSize="18sp"
+            android:layout_marginBottom="16dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/settings_tts_speed"
+            android:textColor="@color/white"
+            android:textSize="20sp" />
+
+        <RadioGroup
+            android:id="@+id/rgSpeed"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="16dp">
+
+            <RadioButton
+                android:id="@+id/rbSlow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tts_slow"
+                android:textColor="@color/white" />
+
+            <RadioButton
+                android:id="@+id/rbNormal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tts_normal"
+                android:textColor="@color/white" />
+
+            <RadioButton
+                android:id="@+id/rbFast"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tts_fast"
+                android:textColor="@color/white" />
+        </RadioGroup>
+
+        <Button
+            android:id="@+id/btnTestVoice"
+            android:layout_width="match_parent"
+            android:layout_height="72dp"
+            android:text="@string/btn_test_voice"
+            android:textSize="20sp"
+            android:backgroundTint="@color/white"
+            android:textColor="@color/black"
+            android:contentDescription="@string/btn_test_voice" />
+
+        <Button
+            android:id="@+id/btnTestVibration"
+            android:layout_width="match_parent"
+            android:layout_height="72dp"
+            android:text="@string/btn_test_vibration"
+            android:textSize="20sp"
+            android:backgroundTint="@color/white"
+            android:textColor="@color/black"
+            android:contentDescription="@string/btn_test_vibration" />
+
+        <Button
+            android:id="@+id/btnSave"
+            android:layout_width="match_parent"
+            android:layout_height="72dp"
+            android:text="@string/btn_save"
+            android:textSize="22sp"
+            android:backgroundTint="@color/yellow"
+            android:textColor="@color/black"
+            android:contentDescription="@string/btn_save" />
+
+    </LinearLayout>
+</ScrollView>
