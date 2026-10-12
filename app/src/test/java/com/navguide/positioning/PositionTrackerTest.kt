@@ -59,8 +59,8 @@ class PositionTrackerTest {
     @Test
     fun `force node switches immediately`() {
         val tracker = PositionTracker(doc)
-        assertTrue(tracker.forceNode("jc"))
-        assertEquals("jc", tracker.currentNodeId)
-        assertTrue(!tracker.forceNode("jc"))
+        assertTrue(tracker.forceNode("s28"))
+        assertEquals("s28", tracker.currentNodeId)
+        assertTrue(!tracker.forceNode("s28"))
     }
 }

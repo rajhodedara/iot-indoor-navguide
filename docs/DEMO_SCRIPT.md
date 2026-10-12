@@ -38,10 +38,13 @@ and eyes-free** through a building — using only phones (no purchased hardware)
 
 ## Scene 3 — "And if technology fails?" (60s)
 
-1. **Simulator fallback**: start ANY navigation, then use the **demo controls** at the bottom of the
-   navigation screen: pick a location in the dropdown → "Hop here" to replay the same walk, or
-   "Simulate 10 steps" to advance. Talking point: *"Even with zero beacons, the navigation logic
-   can be demonstrated and tested."*
+1. **Auto-walk fallback (one tap!)**: start ANY navigation, then tap **"Auto-walk route"** at the
+   bottom of the navigation screen — the app walks the whole route by itself, giving real spoken
+   guidance and vibration at every turn, from Main Entrance to your destination. Perfect for
+   explaining the system when you can't walk around.
+2. **Manual fallback**: pick a location in the dropdown → "Hop here" to jump to it;
+   "Simulate 10 steps" to walk forward step by step.
+   Talking point: *"Even with zero beacons, the navigation logic can be demonstrated and tested."*
 2. **SOS**: long-press the big red SOS button (or triple-press volume-down). Alarm plays,
    SMS goes to the saved contact (receiver shows it). *"One gesture, no screen interaction."*
 
