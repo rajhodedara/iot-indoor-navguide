@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:background="@color/black">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Emergency Contact"
+        android:textColor="@color/white"
+        android:textSize="24sp"
+        android:layout_marginBottom="16dp" />
+
+    <EditText
+        android:id="@+id/etEmergencyContact"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:inputType="phone"
+        android:textColor="@color/black"
+        android:background="@color/white"
+        android:padding="16dp"
+        android:textSize="24sp"
+        android:layout_marginBottom="32dp"
+        android:contentDescription="Enter emergency contact number" />
+
+    <Button
+        android:id="@+id/btnSaveSettings"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:text="Save"
+        android:textSize="24sp"
+        android:backgroundTint="@color/yellow"
+        android:textColor="@color/black"
+        android:contentDescription="Double tap to save settings" />
+
+</LinearLayout>

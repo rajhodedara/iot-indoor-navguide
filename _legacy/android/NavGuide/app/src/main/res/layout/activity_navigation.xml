@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:gravity="center"
+    android:background="@color/black">
+
+    <TextView
+        android:id="@+id/tvStatus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Navigating..."
+        android:textColor="@color/white"
+        android:textSize="36sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:layout_marginBottom="64dp" />
+
+    <Button
+        android:id="@+id/btnToggleObstacles"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:text="Toggle Obstacle Detection"
+        android:textSize="24sp"
+        android:backgroundTint="@color/yellow"
+        android:textColor="@color/black"
+        android:contentDescription="Double tap to toggle camera obstacle detection" />
+
+</LinearLayout>

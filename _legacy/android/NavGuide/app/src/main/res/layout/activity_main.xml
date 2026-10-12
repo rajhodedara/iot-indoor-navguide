@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:gravity="center"
+    android:background="@color/black">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/app_name"
+        android:textColor="@color/white"
+        android:textSize="32sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:layout_marginBottom="48dp"
+        android:contentDescription="Nav Guide Application" />
+
+    <Button
+        android:id="@+id/btnNavigate"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:text="Start Navigation"
+        android:textSize="24sp"
+        android:backgroundTint="@color/yellow"
+        android:textColor="@color/black"
+        android:layout_marginBottom="24dp"
+        android:contentDescription="Double tap to start navigation" />
+
+    <Button
+        android:id="@+id/btnSettings"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:text="Settings"
+        android:textSize="24sp"
+        android:backgroundTint="@color/white"
+        android:textColor="@color/black"
+        android:contentDescription="Double tap to open settings" />
+
+</LinearLayout>

@@ -1,0 +1,36 @@
+﻿# IDE / OS
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+local.properties
+
+# Android
+app/build/
+app/.gradle/
+.gradle/
+build/
+captures/
+*.apk
+*.aab
+app/google-services.json
+keystore.properties
+*.jks
+
+# Node (tools)
+tools/**/node_modules/
+**/node_modules/
+**/dist/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Legacy reference (keep local only once you're sure)
+# _legacy/
+
+# Misc
+*.log
+.env
+.env.*

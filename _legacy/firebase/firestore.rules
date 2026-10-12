@@ -1,0 +1,57 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    function isStudent() {
+      return request.auth != null && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'student';
+    }
+    
+    function isStaff() {
+      return request.auth != null && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'staff';
+    }
+    
+    function isAdmin() {
+      return request.auth != null && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+    
+    match /users/{userId} {
+      allow read: if request.auth.uid == userId || isStaff() || isAdmin();
+      allow write: if isAdmin();
+    }
+    
+    match /buildings/{buildingId} {
+      allow read: if request.auth != null; // Anyone logged in can read maps
+      allow write: if isAdmin();
+      
+      match /beacons/{beaconId} {
+        allow read: if request.auth != null;
+        allow write: if isAdmin();
+      }
+      
+      match /edges/{edgeId} {
+        allow read: if request.auth != null;
+        allow write: if isAdmin();
+      }
+    }
+    
+    match /schedules/{scheduleId} {
+      // Students can read their own schedule, admins can read/write all
+      allow read: if (request.auth != null && resource.data.student_uid == request.auth.uid) || isAdmin();
+      allow write: if isAdmin();
+    }
+    
+    match /sos_events/{eventId} {
+      // Students can write SOS events
+      allow create: if isStudent();
+      allow read: if isStaff() || isAdmin() || (request.auth.uid == resource.data.student_uid);
+      allow update: if isStaff() || isAdmin();
+      allow delete: if isAdmin();
+    }
+    
+    match /checkins/{checkinId} {
+      allow create: if isStudent();
+      allow read: if isAdmin(); // Only admins can see checkin history, staff gets live via SOS
+      allow update, delete: if isAdmin();
+    }
+  }
+}
