@@ -38,4 +38,11 @@ class RouterTest {
         assertNull(Router.findRoute(doc, NavGraph(doc), "nope", "ja"))
         assertNull(Router.findRoute(doc, NavGraph(doc), "ja", "nope"))
     }
+
+    @Test
+    fun `class to class route room 101 to room 103`() {
+        // The core user story: a student walks from one classroom to another.
+        val route = Router.findRoute(doc, NavGraph(doc), "r101", "r103")
+        assertEquals(listOf("r101", "ja", "jb", "jc", "r103"), route)
+    }
 }

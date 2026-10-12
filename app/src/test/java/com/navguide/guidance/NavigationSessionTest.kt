@@ -107,4 +107,21 @@ class NavigationSessionTest {
         s2.start("exitE") // doesn't exist in modified map
         assertTrue(speaker.spoken.any { it.contains("no route", ignoreCase = true) })
     }
+
+    @Test
+    fun `class to class walk from room 101 to room 103`() {
+        // The core user story end-to-end: start inside one class, arrive in another.
+        val (s, speaker, _) = session(anchor = "r101")
+        s.start("r103")
+        val first = speaker.spoken.first()
+        assertTrue("was: $first", first.contains("Navigation started"))
+        assertTrue("was: $first", first.contains("left"))
+
+        s.onNodeHop("ja")
+        s.onNodeHop("jb")
+        s.onNodeHop("jc")
+        s.onNodeHop("r103")
+        assertTrue("spoken=${speaker.spoken}", speaker.spoken.last().contains("You have arrived at Room 103"))
+        assertTrue(s.arrived)
+    }
 }

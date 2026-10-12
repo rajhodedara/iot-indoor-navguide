@@ -1,5 +1,7 @@
 package com.navguide.core
 
+import com.navguide.routing.NavGraph
+import com.navguide.routing.Router
 import com.navguide.testutil.DemoMap
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
@@ -54,5 +56,34 @@ class DemoMapTest {
         assertEquals(doc.edges.size, reparsed.edges.size)
         assertEquals(doc.nodes.first { it.id == "r102" }.beaconMinor, reparsed.nodes.first { it.id == "r102" }.beaconMinor)
         assertEquals(doc.edgeMeters("ja", "jb"), reparsed.edgeMeters("ja", "jb"))
+    }
+
+    @Test
+    fun `a custom college-style map parses, validates and routes`() {
+        // Proves the app is map-agnostic: any well-formed building map works, not just the demo.
+        val json = """
+        {
+          "schemaVersion": 1,
+          "name": "College Floor 1",
+          "uuid": "E2C56DB5-DFFB-48D2-B060-D0F5A71096E0",
+          "floor": { "widthM": 100, "heightM": 60, "pxPerM": 10, "image": null },
+          "nodes": [
+            { "id": "c101", "x": 10, "y": 10, "name": "Class 101", "type": "room", "beaconMinor": 1 },
+            { "id": "cor1", "x": 30, "y": 10, "name": "Corridor Junction", "type": "intersection", "beaconMinor": 2 },
+            { "id": "c102", "x": 30, "y": 30, "name": "Class 102", "type": "room", "beaconMinor": 3 }
+          ],
+          "edges": [
+            { "from": "c101", "to": "cor1", "m": 20 },
+            { "from": "cor1", "to": "c102", "m": 20 }
+          ]
+        }
+        """.trimIndent()
+        val college = MapDoc.parse(json)
+        assertTrue("problems: ${college.validate()}", college.validate().isEmpty())
+        assertEquals(2, college.destinationNodes.size)
+        assertEquals(
+            listOf("c101", "cor1", "c102"),
+            Router.findRoute(college, NavGraph(college), "c101", "c102")
+        )
     }
 }
