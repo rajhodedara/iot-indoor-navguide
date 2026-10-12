@@ -47,8 +47,8 @@ Or copy the APK to the phone and open it (allow "install from unknown sources").
 
 1. Grant the permissions the app asks for (Bluetooth + location + notifications + SMS).
 2. **Settings** → set your emergency contact and check "Test voice" / "Test vibration".
-3. Back on the main screen, pick a destination — or try **Simulator (Demo)** first to see how
-   navigation behaves without any beacons.
+3. Back on the main screen, pick a destination. Inside navigation, the bottom **demo controls**
+   (screenshot-free simulator) let you test without any beacons: pick a location → "Hop here".
 
 ## 5. Troubleshooting
 
@@ -60,7 +60,7 @@ Or copy the APK to the phone and open it (allow "install from unknown sources").
 | No voice output | Install/enable a TTS engine (Speech Services by Google is preinstalled on most phones). Settings → Text-to-speech → check engine. |
 | "This phone cannot broadcast BLE beacons" | That phone lacks BLE peripheral support. Use another phone, or a real beacon / ESP32. |
 | Voice speed sounds odd | Android 12 quirk on some engines: change the speed in NavGuide Settings (Slow/Normal/Fast) and test. |
-| Navigation doesn't start moving | Keep walking; beacons are detected within a few meters. Or use Simulator "Hop to …" to check the logic. |
+| Navigation doesn't start moving | Keep walking; beacons are detected within a few meters. Or use the in-navigation demo controls ("Hop here") to check the logic. |
 
 ## 6. Project structure recap (where to change what)
 

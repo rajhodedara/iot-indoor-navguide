@@ -46,9 +46,6 @@ class MainActivity : AppCompatActivity() {
         findViewById<Button>(R.id.btnBeaconMode).setOnClickListener {
             startActivity(Intent(this, BeaconModeActivity::class.java))
         }
-        findViewById<Button>(R.id.btnSimulator).setOnClickListener {
-            startActivity(Intent(this, SimulatorActivity::class.java))
-        }
         findViewById<Button>(R.id.btnSos).setOnLongClickListener {
             sos.trigger(prefs.emergencyContact, null)
             true
@@ -90,7 +87,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
-        if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
+        if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN && event?.repeatCount == 0) {
             val now = System.currentTimeMillis()
             volumeDownTimes.add(now)
             volumeDownTimes.removeAll { now - it > 1500 }

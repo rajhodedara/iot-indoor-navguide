@@ -38,9 +38,10 @@ and eyes-free** through a building — using only phones (no purchased hardware)
 
 ## Scene 3 — "And if technology fails?" (60s)
 
-1. **Simulator fallback**: on any phone, open **Simulator**, start navigation, use
-   "Hop to …" buttons to replay the same walk. Talking point: *"Even with zero beacons,
-   the navigation logic can be demonstrated and tested."*
+1. **Simulator fallback**: start ANY navigation, then use the **demo controls** at the bottom of the
+   navigation screen: pick a location in the dropdown → "Hop here" to replay the same walk, or
+   "Simulate 10 steps" to advance. Talking point: *"Even with zero beacons, the navigation logic
+   can be demonstrated and tested."*
 2. **SOS**: long-press the big red SOS button (or triple-press volume-down). Alarm plays,
    SMS goes to the saved contact (receiver shows it). *"One gesture, no screen interaction."*
 
@@ -61,4 +62,4 @@ and eyes-free** through a building — using only phones (no purchased hardware)
 | A beacon phone won't broadcast (unsupported) | Swap in another phone; or say "this is why real beacons exist — and here's the simulator". |
 | User phone doesn't detect the beacon | Move closer (within ~2–3 m), wait 2–3 s, keep the beacon phone's screen on. |
 | No TTS voice | Show the big on-screen text + vibrations; check the phone's TTS engine afterwards. |
-| Wi-Fi/BT interference in the hall | Use Scene 3 (Simulator) to finish the demo cleanly. |
+| Wi-Fi/BT interference in the hall | Use the inline demo controls (Scene 3) to finish the demo cleanly. |

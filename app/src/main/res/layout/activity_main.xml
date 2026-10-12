@@ -57,16 +57,6 @@
             android:contentDescription="@string/btn_beacon_mode" />
 
         <Button
-            android:id="@+id/btnSimulator"
-            android:layout_width="match_parent"
-            android:layout_height="72dp"
-            android:text="@string/btn_simulator"
-            android:textSize="22sp"
-            android:backgroundTint="@color/white"
-            android:textColor="@color/black"
-            android:contentDescription="@string/btn_simulator" />
-
-        <Button
             android:id="@+id/btnSos"
             android:layout_width="match_parent"
             android:layout_height="96dp"

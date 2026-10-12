@@ -33,7 +33,50 @@
         android:textColor="@color/yellow"
         android:textSize="20sp"
         android:gravity="center"
-        android:layout_marginBottom="12dp" />
+        android:layout_marginBottom="8dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/demo_label"
+        android:textColor="@color/text_secondary"
+        android:textSize="13sp"
+        android:layout_marginBottom="4dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="4dp">
+
+        <Spinner
+            android:id="@+id/spSimNode"
+            android:layout_width="0dp"
+            android:layout_height="52dp"
+            android:layout_weight="1.4" />
+
+        <Button
+            android:id="@+id/btnSimHop"
+            android:layout_width="0dp"
+            android:layout_height="52dp"
+            android:layout_weight="1"
+            android:text="@string/btn_sim_hop"
+            android:textSize="14sp"
+            android:backgroundTint="@color/white"
+            android:textColor="@color/black"
+            android:contentDescription="@string/btn_sim_hop" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btnSimSteps"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:text="@string/btn_sim_steps10"
+        android:textSize="14sp"
+        android:backgroundTint="@color/white"
+        android:textColor="@color/black"
+        android:layout_marginBottom="8dp"
+        android:contentDescription="@string/btn_sim_steps10" />
 
     <Button
         android:id="@+id/btnRepeat"

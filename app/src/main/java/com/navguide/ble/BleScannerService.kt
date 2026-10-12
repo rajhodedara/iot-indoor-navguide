@@ -51,22 +51,28 @@ class BleScannerService : Service() {
     override fun onBind(intent: Intent?): IBinder? = null
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        ServiceCompat.startForeground(
-            this,
-            NOTIF_ID,
-            buildNotification(),
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                ServiceInfo.FOREGROUND_SERVICE_TYPE_CONNECTED_DEVICE
-            } else {
-                0
-            }
-        )
         if (!hasScanPermission()) {
             stopSelf()
             return START_NOT_STICKY
         }
+        try {
+            ServiceCompat.startForeground(
+                this,
+                NOTIF_ID,
+                buildNotification(),
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    ServiceInfo.FOREGROUND_SERVICE_TYPE_CONNECTED_DEVICE
+                } else {
+                    0
+                }
+            )
+        } catch (_: Exception) {
+            // Foreground promotion rejected (background start restrictions). Non-fatal.
+            stopSelf()
+            return START_NOT_STICKY
+        }
         startScan()
-        return START_STICKY
+        return START_NOT_STICKY
     }
 
     private fun hasScanPermission(): Boolean {

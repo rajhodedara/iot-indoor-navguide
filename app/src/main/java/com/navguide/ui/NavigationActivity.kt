@@ -7,7 +7,9 @@ import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.os.Bundle
 import android.view.WindowManager
+import android.widget.ArrayAdapter
 import android.widget.Button
+import android.widget.Spinner
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
@@ -74,9 +76,23 @@ class NavigationActivity : AppCompatActivity(), SensorEventListener {
             finish()
         }
 
+        // Demo controls: simulate beacons and walking on one phone (no hardware needed).
+        val simNodes = doc.nodes.sortedBy { it.name }
+        val spinner = findViewById<Spinner>(R.id.spSimNode)
+        spinner.adapter = ArrayAdapter(
+            this,
+            android.R.layout.simple_spinner_dropdown_item,
+            simNodes.map { it.name }
+        )
+        findViewById<Button>(R.id.btnSimHop).setOnClickListener {
+            val idx = spinner.selectedItemPosition
+            if (idx in simNodes.indices) session.onNodeHop(simNodes[idx].id)
+        }
+        findViewById<Button>(R.id.btnSimSteps).setOnClickListener {
+            repeat(10) { session.onStep() }
+        }
+
         lifecycleScope.launch { BeaconBus.readings.collect { r -> session.onReading(r) } }
-        lifecycleScope.launch { BeaconBus.nodeHops.collect { id -> session.onNodeHop(id) } }
-        lifecycleScope.launch { BeaconBus.stepPulses.collect { n -> repeat(n) { session.onStep() } } }
 
         session.start(destId)
         sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager

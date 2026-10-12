@@ -38,6 +38,8 @@
     <string name="sim_hint">Tap a location to simulate the user standing near it, or simulate steps to walk.</string>
     <string name="btn_sim_steps5">Simulate 5 steps</string>
     <string name="btn_sim_steps10">Simulate 10 steps</string>
+    <string name="btn_sim_hop">Hop here</string>
+    <string name="demo_label">Demo controls (simulator):</string>
     <string name="btn_reset">Reset</string>
     <string name="sim_status_idle">No active navigation session</string>
     <string name="sim_status_hint">No active navigation session</string>

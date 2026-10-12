@@ -17,7 +17,7 @@ patterns**. Designed for a university department building (single floor, corrido
 | Navigate between locations on a floor map (spoken steps + haptics) | ✅ |
 | BLE iBeacon scanning (real beacons) | ✅ |
 | **Beacon Mode** — turn a demo phone INTO a beacon (no hardware needed) | ✅ |
-| **Simulator** — demo/test navigation on one phone | ✅ |
+| **In-navigation demo controls** — hop between locations / simulate steps on one phone | ✅ |
 | Offline-first: bundled map, no internet, no cloud account | ✅ |
 | Emergency SOS: loud alarm + SMS to a saved contact | ✅ |
 | Map editor (single HTML file) to design your building | ✅ |
@@ -35,7 +35,8 @@ patterns**. Designed for a university department building (single floor, corrido
    - Phone A: open the app → **Beacon Mode** → pick a location (e.g., "Junction A") → Start broadcasting.
    - Phone B: open the app → pick a destination → walk toward Phone A; instructions speak as the
      beacons are detected. See `docs/DEMO_SCRIPT.md` for a full 3-scene demo script.
-   - No second phone? Use **Simulator** mode on one phone to step through the whole story.
+   - No second phone? Inside any navigation, use the **demo controls** at the bottom of the
+     navigation screen (pick a location → "Hop here", or "Simulate 10 steps") to replay the walk.
 
 3. **Optional — real beacons or ESP32 DIY beacons**: see `docs/HARDWARE_OPTIONAL.md`.
 
