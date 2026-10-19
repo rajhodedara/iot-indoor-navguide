@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/bg">
 
@@ -15,7 +15,7 @@
         android:paddingStart="@dimen/screen_pad"
         android:paddingEnd="@dimen/space_12"
         android:paddingTop="@dimen/space_16"
-        android:paddingBottom="@dimen/space_12">
+        android:paddingBottom="@dimen/space_8">
 
         <ImageView
             android:id="@+id/imgLogo"
@@ -42,7 +42,7 @@
                 android:id="@+id/tvMapName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/main_subtitle"
+                android:text="KJSIT Sion Campus"
                 android:textAppearance="@style/TextAppearance.NavGuide.Caption" />
         </LinearLayout>
 
@@ -55,7 +55,7 @@
             android:contentDescription="@string/btn_settings" />
     </LinearLayout>
 
-    <!-- Destination list -->
+    <!-- Scrollable main body -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -70,39 +70,222 @@
             android:paddingEnd="@dimen/screen_pad"
             android:paddingBottom="@dimen/space_16">
 
+            <!-- Title -->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/main_where_to"
-                android:textAppearance="@style/TextAppearance.NavGuide.Display"
-                android:layout_marginBottom="@dimen/space_20" />
+                android:textAppearance="@style/TextAppearance.NavGuide.Headline"
+                android:layout_marginTop="@dimen/space_8"
+                android:layout_marginBottom="@dimen/space_12" />
 
+            <!-- Floor Selector Header -->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/section_rooms"
+                android:text="Select Floor"
                 android:textAppearance="@style/TextAppearance.NavGuide.Label"
                 android:layout_marginBottom="@dimen/space_8" />
 
+            <!-- Horizontal Floor Chips -->
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scrollbars="none"
+                android:layout_marginBottom="@dimen/space_12">
+
+                <LinearLayout
+                    android:id="@+id/llFloorChips"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/chipFloorAll"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="All Floors"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/text_primary"
+                        android:background="@drawable/bg_chip_unselected"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp"
+                        android:paddingTop="8dp"
+                        android:paddingBottom="8dp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:layout_marginEnd="8dp" />
+
+                    <TextView
+                        android:id="@+id/chipFloor1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Ground Floor (F1)"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/text_primary"
+                        android:background="@drawable/bg_chip_unselected"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp"
+                        android:paddingTop="8dp"
+                        android:paddingBottom="8dp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:layout_marginEnd="8dp" />
+
+                    <TextView
+                        android:id="@+id/chipFloor7"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="7th Floor (F7)"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/text_on_accent"
+                        android:background="@drawable/bg_chip_selected"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp"
+                        android:paddingTop="8dp"
+                        android:paddingBottom="8dp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:layout_marginEnd="8dp" />
+                </LinearLayout>
+            </HorizontalScrollView>
+
+            <!-- Category Filter Header -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Category"
+                android:textAppearance="@style/TextAppearance.NavGuide.Label"
+                android:layout_marginBottom="@dimen/space_8" />
+
+            <!-- Category Chips -->
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scrollbars="none"
+                android:layout_marginBottom="@dimen/space_16">
+
+                <LinearLayout
+                    android:id="@+id/llCategoryChips"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/chipCatAll"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="All"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/text_on_accent"
+                        android:background="@drawable/bg_chip_selected"
+                        android:paddingStart="14dp"
+                        android:paddingEnd="14dp"
+                        android:paddingTop="6dp"
+                        android:paddingBottom="6dp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:layout_marginEnd="8dp" />
+
+                    <TextView
+                        android:id="@+id/chipCatRooms"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Rooms &amp; Labs"
+                        android:textSize="13sp"
+                        android:textColor="@color/text_primary"
+                        android:background="@drawable/bg_chip_unselected"
+                        android:paddingStart="14dp"
+                        android:paddingEnd="14dp"
+                        android:paddingTop="6dp"
+                        android:paddingBottom="6dp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:layout_marginEnd="8dp" />
+
+                    <TextView
+                        android:id="@+id/chipCatStairs"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Stairs &amp; Lifts"
+                        android:textSize="13sp"
+                        android:textColor="@color/text_primary"
+                        android:background="@drawable/bg_chip_unselected"
+                        android:paddingStart="14dp"
+                        android:paddingEnd="14dp"
+                        android:paddingTop="6dp"
+                        android:paddingBottom="6dp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:layout_marginEnd="8dp" />
+
+                    <TextView
+                        android:id="@+id/chipCatWashroom"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Washrooms"
+                        android:textSize="13sp"
+                        android:textColor="@color/text_primary"
+                        android:background="@drawable/bg_chip_unselected"
+                        android:paddingStart="14dp"
+                        android:paddingEnd="14dp"
+                        android:paddingTop="6dp"
+                        android:paddingBottom="6dp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:layout_marginEnd="8dp" />
+
+                    <TextView
+                        android:id="@+id/chipCatExits"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Emergency Exits"
+                        android:textSize="13sp"
+                        android:textColor="@color/text_primary"
+                        android:background="@drawable/bg_chip_unselected"
+                        android:paddingStart="14dp"
+                        android:paddingEnd="14dp"
+                        android:paddingTop="6dp"
+                        android:paddingBottom="6dp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:layout_marginEnd="8dp" />
+                </LinearLayout>
+            </HorizontalScrollView>
+
+            <!-- Active filter counter / title -->
+            <TextView
+                android:id="@+id/tvResultsCount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Destinations"
+                android:textAppearance="@style/TextAppearance.NavGuide.Label"
+                android:textColor="@color/amber"
+                android:layout_marginBottom="@dimen/space_8" />
+
+            <!-- Destination cards container -->
             <LinearLayout
-                android:id="@+id/llRooms"
+                android:id="@+id/llDestinations"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical" />
 
             <TextView
+                android:id="@+id/tvEmptyNotice"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/section_access"
-                android:textAppearance="@style/TextAppearance.NavGuide.Label"
-                android:layout_marginTop="@dimen/space_24"
-                android:layout_marginBottom="@dimen/space_8" />
+                android:text="No destinations match this filter."
+                android:textAppearance="@style/TextAppearance.NavGuide.Body"
+                android:textColor="@color/text_secondary"
+                android:gravity="center"
+                android:paddingTop="24dp"
+                android:paddingBottom="24dp"
+                android:visibility="gone" />
 
-            <LinearLayout
-                android:id="@+id/llAccess"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical" />
         </LinearLayout>
     </ScrollView>
 
@@ -113,8 +296,9 @@
         android:orientation="vertical"
         android:paddingStart="@dimen/screen_pad"
         android:paddingEnd="@dimen/screen_pad"
-        android:paddingTop="@dimen/space_12"
-        android:paddingBottom="@dimen/space_20">
+        android:paddingTop="@dimen/space_8"
+        android:paddingBottom="@dimen/space_16"
+        android:background="@color/surface">
 
         <Button
             android:id="@+id/btnBeaconMode"
@@ -132,7 +316,7 @@
             android:id="@+id/btnSos"
             android:layout_width="match_parent"
             android:layout_height="@dimen/button_height_hero"
-            android:layout_marginTop="@dimen/space_12"
+            android:layout_marginTop="@dimen/space_8"
             android:text="@string/btn_sos"
             android:textSize="20sp"
             android:textStyle="bold"
