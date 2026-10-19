@@ -3,6 +3,7 @@ package com.navguide.routing
 import com.navguide.core.MapDoc
 import com.navguide.testutil.DemoMap
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Test
 
@@ -35,8 +36,10 @@ class RouterTest {
 
     @Test
     fun `isolated section has no route`() {
-        // Cut the only corridor link; the entrance section is then unreachable from the rest.
-        val modified = doc.copy(edges = doc.edges.filterNot { it.from == "stair1" && it.to == "corridor1" })
+        // Cut the link connecting the entrance; the entrance is then unreachable from the rest.
+        val modified = doc.copy(edges = doc.edges.filterNot {
+            (it.from == "main_entry" && it.to == "stair1") || (it.from == "stair1" && it.to == "main_entry")
+        })
         assertNull(Router.findRoute(modified, NavGraph(modified), "main_entry", "canteen"))
     }
 
@@ -51,5 +54,12 @@ class RouterTest {
         // The core user story: a student walks from one location to another, via corridor junctions.
         val route = Router.findRoute(doc, NavGraph(doc), "library", "it_dept")
         assertEquals(listOf("library", "corridor1", "stair2", "s28", "it_dept"), route)
+    }
+
+    @Test
+    fun `multi-floor route from ground floor to 8th floor drawing hall`() {
+        val route = Router.findRoute(doc, NavGraph(doc), "main_entry", "drawing_hall_f8")
+        assertNotNull(route)
+        assertEquals("drawing_hall_f8", route!!.last())
     }
 }

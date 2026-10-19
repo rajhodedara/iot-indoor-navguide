@@ -36,6 +36,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var chipFloorAll: TextView
     private lateinit var chipFloor1: TextView
     private lateinit var chipFloor7: TextView
+    private lateinit var chipFloor8: TextView
 
     private lateinit var chipCatAll: TextView
     private lateinit var chipCatRooms: TextView
@@ -67,6 +68,7 @@ class MainActivity : AppCompatActivity() {
         chipFloorAll = findViewById(R.id.chipFloorAll)
         chipFloor1 = findViewById(R.id.chipFloor1)
         chipFloor7 = findViewById(R.id.chipFloor7)
+        chipFloor8 = findViewById(R.id.chipFloor8)
 
         // Find category chips
         chipCatAll = findViewById(R.id.chipCatAll)
@@ -116,6 +118,12 @@ class MainActivity : AppCompatActivity() {
             renderDestinations()
             announceFilter("Seventh Floor selected")
         }
+        chipFloor8.setOnClickListener {
+            selectedFloor = 8
+            updateFloorChipsUI()
+            renderDestinations()
+            announceFilter("Eighth Floor selected")
+        }
         updateFloorChipsUI()
     }
 
@@ -123,6 +131,7 @@ class MainActivity : AppCompatActivity() {
         setChipState(chipFloorAll, selectedFloor == null)
         setChipState(chipFloor1, selectedFloor == 1)
         setChipState(chipFloor7, selectedFloor == 7)
+        setChipState(chipFloor8, selectedFloor == 8)
     }
 
     private fun setupCategoryFilters() {
@@ -211,6 +220,7 @@ class MainActivity : AppCompatActivity() {
         val floorLabel = when (selectedFloor) {
             1 -> "Ground Floor (F1)"
             7 -> "7th Floor (F7)"
+            8 -> "8th Floor (F8)"
             else -> "All Floors"
         }
 

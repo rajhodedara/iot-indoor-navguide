@@ -150,6 +150,23 @@
                         android:clickable="true"
                         android:focusable="true"
                         android:layout_marginEnd="8dp" />
+
+                    <TextView
+                        android:id="@+id/chipFloor8"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="8th Floor (F8)"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/text_primary"
+                        android:background="@drawable/bg_chip_unselected"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp"
+                        android:paddingTop="8dp"
+                        android:paddingBottom="8dp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:layout_marginEnd="8dp" />
                 </LinearLayout>
             </HorizontalScrollView>
 
